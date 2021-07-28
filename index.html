@@ -219,7 +219,7 @@ In-domain Pretraining for Vision-and-Language Navigation
 
   </div>
 
-  <div class="ui vertical stripe segment">
+  <div class="ui vertical stripe segment" id="motivation">
     <div class="ui middle aligned stackable grid container">
       <div class="row">
         <div class="eight wide column">
@@ -234,6 +234,13 @@ In-domain Pretraining for Vision-and-Language Navigation
 	  These environments contain new objects.
 	  How can an agent follow an instruction referring to a Christmas tree when the latter has never been observed in the language or visual corpus?
 	  </p>
+	</div>
+        <div class="eight wide right floated column">
+          <img src="assets/img/christmas_tree.svg" class="ui massive image">
+        </div>
+      </div>
+      <div class="row">
+        <div class="eight wide column">
           <h3 class="ui header">
 		  <div class="ui green horizontal big label">
 			  Solution
@@ -243,11 +250,11 @@ In-domain Pretraining for Vision-and-Language Navigation
           </h3>
           <p>We build a large-scale, visually diverse, and in-domain dataset by creating path-instruction pairs close to a VLN-like setup and show the benefits of self-supervised pretraining.</p>
         </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
+        <div class="eight wide right floated column">
+          <img src="assets/img/bnb-dataset.svg" class="ui massive image">
         </div>
       </div>
-      <div class="row">
+      <div class="ui right aligned row">
 	      <a href="#demo" class="ui huge primary button">See our demo <i class="right arrow icon"></i></a>
       </div>
     </div>
@@ -256,6 +263,8 @@ In-domain Pretraining for Vision-and-Language Navigation
 
   <div class="ui segment" style="border-top: none">
     <div class="ui text container">
+
+
       <h1 class="ui header">Abstract</h1>
 <p>
       Vision-and-language navigation (VLN) aims to enable embodied agents to navigate in realistic environments using natural language instructions.
@@ -281,16 +290,64 @@ Moreover, our in-domain pretraining significantly increases performance on a cha
 </p>
       <a class="ui primary large button">Read the paper</a>
       <a class="ui primary basic large button">Supplementary material</a>
+
+
+<div class="ui segment" id="bnb_dataset">
+      <h1 class="ui header">Collecting BnB Image-Caption Pairs</h1>
+  <div class="left ui rail" style="">
+    <p> The number images from Matterport environments <span class="citation" data-cites="Matterport3D">[44]</span> refers to the number of panoramas. The speaker model <span class="citation" data-cites="tan2019envdrop">[32]</span> generates instructions for randomly selected trajectories, but is limited to panoramas from 60 training environments. Note that the data from Conceptual Captions (ConCaps) may feature some houses, but it is not the main category. </p>
+    <div class="ui sticky">
+    <h4 class="ui header" id="tab:bnb_dataset_cmpr">Table 2: Comparing BnB to other existing VLN datasets</h4>
+    <table style=" table-layout: fixed">
+    <thead>
+    <tr class="header">
+    <th style="text-align: left;">Dataset</th>
+    <th style="text-align: left;">Source</th>
+    <th style="text-align: center;">#Envs</th>
+    <th style="text-align: center;">#Imgs</th>
+    <th style="text-align: center;">#Texts</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="odd">
+    <td style="text-align: left;">R2R <span class="citation" data-cites="anderson2018r2r">[2]</span></td>
+    <td style="text-align: left;">Matterport</td>
+    <td style="text-align: center;">90</td>
+    <td style="text-align: center;">10.8K</td>
+    <td style="text-align: center;">21.7K</td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: left;">REVERIE <span class="citation" data-cites="qi2020reverie">[19]</span></td>
+    <td style="text-align: left;">Matterport</td>
+    <td style="text-align: center;">86</td>
+    <td style="text-align: center;">10.6K</td>
+    <td style="text-align: center;">10.6K</td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: left;">Speaker <span class="citation" data-cites="tan2019envdrop">[32]</span></td>
+    <td style="text-align: left;">Matterport</td>
+    <td style="text-align: center;">60</td>
+    <td style="text-align: center;">7.8K</td>
+    <td style="text-align: center;">0.2M</td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: left;">ConCaps <span class="citation" data-cites="ConceptualCaptions">[13]</span></td>
+    <td style="text-align: left;">Web</td>
+    <td style="text-align: center;">-</td>
+    <td style="text-align: center;">3.3M</td>
+    <td style="text-align: center;">3.3M</td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: left;"><strong>BnB</strong> (ours)</td>
+    <td style="text-align: left;">Airbnb</td>
+    <td style="text-align: center;">140K</td>
+    <td style="text-align: center;">1.4M</td>
+    <td style="text-align: center;">0.7M</td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
   </div>
-</div>
-
-
-<div class="ui vertical stripe segment">
-<div class="ui middle aligned stackable grid container">
-      <h1 class="ui header">BnB dataset</h1>
-    <div class="ui middle aligned stackable grid container">
-      <div class="row">
-        <div class="eight wide column">
       <p>
       Hosts that rent places on online marketplaces often upload attractive and unique photos along with descriptions. One such marketplace, <a href="https://airbnb.com">Airbnb</a>, has 5.6M listings from over 100K cities all around the world. 
       </p>
@@ -299,91 +356,65 @@ Moreover, our in-domain pretraining significantly increases performance on a cha
       We collect and filter 1.4M images and 0.7M captions from Airbnb.
       Then, we propose methods to transform images and captions into VLN-like path-instruction pairs to reduce the domain gap between webly crawled image-text pairs and VLN tasks.
       </p>
-	</div>
-      </div>
-    </div>
+
+
+      <p>
+      <strong>Collection process.</strong> We restrict our dataset to listings from the US (about 10% of <em>Airbnb</em>) to ensure high quality English captions and visual similarity with Matterport environments <span class="citation" data-cites="Matterport3D">[44]</span>. The data collection proceeds as follows: (1) obtain a list of locations from Wikipedia; (2) find listings in these locations by querying the <em>Airbnb</em> search engine; (3) download listings and their metadata; (4) remove <em>outdoors</em> images<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> as classified by a ResNet model pretrained on Places365 <span class="citation" data-cites="zhou2017places">[45]</span>; and (5) remove invalid image captions such as emails, URLs and duplicates.</p>
+
+<p><strong>Statistics.</strong> We downloaded almost 150k listings and their metadata (1/4 of the listings in the US) in step 3, leading to over 3M images and 1M captions. After data cleaning with steps 4 and 5, we obtain 713K image-caption pairs and 676K images without captions. Table <a href="#tab:bnb_dataset_cmpr" data-reference-type="ref" data-reference="tab:bnb_dataset_cmpr">2</a> compares our BnB dataset to other datasets used in previous works for VLN (pre-)training. It is larger than R2R <span class="citation" data-cites="anderson2018r2r">[2]</span>, REVERIE <span class="citation" data-cites="qi2020reverie">[19]</span> and includes a large diversity of rooms and objects, which is not the case for Conceptual Captions <span class="citation" data-cites="ConceptualCaptions">[13]</span>. We posit that such in-domain data is crucial to deal with the data scarcity challenge in VLN environments as illustrated <a href="#motivation">above</a>. We use 95% of our BnB dataset for training and the remaining 5% for validation.</p>
+<p>Apart from images and captions, our collected listings contain structured data including a list of amenities, a general description, reviews, location, and rental price, which may offer additional applications in the future. More details about the dataset and examples are presented in the supplementary material.</p>
 </div>
-</div>
+<script>
+$('.ui.sticky')
+  .sticky({
+    context: '#bnb_dataset'
+  })
+;
+</script>
 
 
-
-<div class="ui vertical stripe segment">
-<div class="ui middle aligned stackable grid container">
+<div class="ui segment" id="pi_pairs">
       <h1 class="ui header">Building path-instruction pairs</h1>
-    <div class="ui middle aligned stackable grid container">
-      <div class="row">
-        <div class="eight wide column">
-          <h2 class="ui header">Concatenating Images and Texts in a BnB Listing</h2>
-<p>Images in a BnB listing usually depict different locations in a house, mimicking the sequential visual observations an agent makes while navigating in the house. To create a VLN-like path-instruction pair, we randomly select and concatenate <span class="math inline"><em>K</em></span><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> image-caption pairs from the listing . In between each caption, we randomly add a word from “<em>and</em>”, “<em>then</em>”, “.” or nothing to make the concatenated instruction more fluent and diverse.</p>
-        </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="fourteen wide column">
+  <div class="left ui rail" style="">
+    <p>Blablabla</p>
+    <div class="ui sticky pipairs">
+    <h4 class="ui header" id="tab:bnb_dataset_cmpr">Table 2: Comparing BnB to other existing VLN datasets</h4>
+    <p>FOOO</p>
+    </div>
+  </div>
+
+<p>Images in a BnB listing usually depict different locations in a house, mimicking the sequential visual observations an agent makes while navigating in the house. To create a VLN-like path-instruction pair, we randomly select and concatenate <span class="math inline"><em>K</em></span><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> image-caption pairs from the listing . In between each caption, we randomly add a word from “<em>and</em>”, “<em>then</em>”, “.” or nothing to make the concatenated instruction more fluent and diverse.</p>
+
           <h2 class="ui header">Augmenting <em>Paths</em> with Visual Contexts</h2>
 <p>In the above concatenated path, each location only contains one BnB image, and perhaps with a limited view angle as hosts may focus on objects or amenities they wish to highlight. Therefore, it lacks the panoramic visual context at each location that the agent receives in real navigation paths. Moreover, each location in the concatenated instruction is described by a unique sentence, while adjacent locations are often expressed together in one sentence in VLN instructions <span class="citation" data-cites="hong2020fgr2r">[46]</span>. To address the above issues with concatenation, we propose two approaches to compose paths that have more visual context and can also leverage the abundant images without captions (denoted as <em>captionless images</em>).</p>
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="eight wide column">
 		<p><strong>Image merging</strong> extends the panoramic context of a location by grouping images from similar room categories (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">[fig:dataset]</a>). For example, if the image depicts a kitchen sink, it is natural to expect images of other objects such as forks and knives nearby. Specifically, we first cluster images of similar categories (<em>e.g</em>.. <em>kitchen</em>) using room labels predicted by a pretrained Places365 model <span class="citation" data-cites="zhou2017places">[45]</span>. Then, we extract multiple regions from this <em>merged</em> set of images, and use them as an approximation to the panoramic visual representation.</p>
-        </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="eight wide column">
 <p><strong>Captionless image insertion.</strong> The Table 1 shows that half of the BnB images are captionless. Using them allows to increase the size of the dataset. When creating a path-instruction pair from the concatenation approach, a captionless image is inserted as if its caption was an empty string. The BnB PI pairs hence generated better approximate the distribution of the R2R path-instructions: (1) some images in the path are not described and (2) instructions have similar number of noun phrases.</p>
-        </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="fourteen wide column">
           <h2 class="ui header">Crafting <em>Instructions</em> with Fluent Transitions</h2>
 <p>The concatenated captions mainly describe rooms or objects at different locations, but do not contain any of the actionable verbs as in navigation instructions, <em>e.g</em>.. “<em>turn left at the door</em>” or “<em>walk straight down the corridor</em>”. We suggest two strategies to create fake instructions that have fluent transitions between sentences.</p>
-        </div>
-      </div>
 
 
-      <div class="row">
-        <div class="eight wide column">
 <p><strong>Instruction rephrasing.</strong> We use a fill-in-the-blanks approach to replace noun-phrases in human annotated navigation instructions <span class="citation" data-cites="anderson2018r2r">[2]</span> by those in BnB captions (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">[fig:dataset]</a>). Concretely, we create more than 10K instruction templates containing 2-7 blanks, and fill the blanks with noun-phrases extracted from BnB captions. The noun-phrases matched to object categories from the Visual Genome <span class="citation" data-cites="krishna2017vg">[47]</span> dataset are preferred during selection. This allows us to create VLN-like instructions with actionable verbs interspersed with room and object references for visual cues that are part of the BnB path (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">[fig:dataset]</a>).</p>
-        </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="eight wide column">
 <p><strong>Instruction rephrasing.</strong> It is a video captioning like model that takes in a sequence of images and generates an instruction corresponding to an agent’s path through an environment. To train this model, we adopt ViLBERT and train it to generate captions for single BnB image-caption pairs. Further, this model is fine-tuned on trajectories of the R2R dataset to generate corresponding instructions. Finally, we use this model to generate BnB PI pairs by producing an instruction for a concatenated image sequence from BnB (the path).</p>
-        </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
-        </div>
-      </div>
 
       <h2 class="ui header">Examples of path-instruction pairs</h2>
 
-      <div class="row">
-        <div class="eight wide column">
-          <h2 class="ui header"></h2>
-          <p>
-          </p>
-        </div>
-        <div class="six wide right floated column">
           <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
-        </div>
-      </div>
+
+</div>
+<script>
+$('.ui.sticky.pipairs')
+  .sticky({
+    context: '#pi_pairs'
+  })
+;
+</script>
+
+
     </div>
 </div>
 
