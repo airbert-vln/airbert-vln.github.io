@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <!-- Site Properties -->
-  <title>Homepage - Semantic</title>
+  <title>Airbert - ICCV 2021</title>
 
   
     <!-- SEO -->
@@ -161,7 +161,7 @@
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
     <a class="active item">Summary</a>
-    <a class="item">Demo</a>
+    <a href="#demo" class="item">Demo</a>
     <a class="item">arXiv</a>
     <a class="item">BibTeX</a>
   </div>
@@ -170,7 +170,7 @@
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
     <a class="active item">Summary</a>
-    <a class="item">Demo</a>
+    <a href="#demo" class="item">Demo</a>
     <a class="item">arXiv</a>
     <a class="item">BibTeX</a>
 </div>
@@ -186,7 +186,7 @@
           <i class="sidebar icon"></i>
         </a>
 	<a class="active item">Summary</a>
-	<a class="item">Demo</a>
+	<a href="#demo" class="item">Demo</a>
 	<a class="item">arXiv</a>
 	<a class="item">BibTeX</a>
       </div>
@@ -212,7 +212,7 @@ In-domain Pretraining for Vision-and-Language Navigation
   🏢
   <a href=https://www.iiit.ac.in"> IIIT Hyderabad</a>,
   🛖 
-  <a href="https://research.google">Google Grenoble</a>
+  <a href="https://research.google">Google Research</a>
   		</h4>
     </div>
 </script>
@@ -249,7 +249,7 @@ In-domain Pretraining for Vision-and-Language Navigation
         </div>
       </div>
       <div class="row">
-	      <div class="ui huge primary button">See our demo <i class="right arrow icon"></i></div>
+	      <a href="#demo" class="ui huge primary button">See our demo <i class="right arrow icon"></i></a>
       </div>
     </div>
   </div>
@@ -277,7 +277,7 @@ We further propose a shuffling loss that improves the learning of temporal order
 </p>
 
 <p>
-We use <a href="https://github.com/airbert-vln/bnb-dataset/">BnB</a> to pretrain our <em>Airbert</em> model that can be adapted to discriminative and generative settings and show that it outperforms state of the art for <a href="https://bringmeaspoon.org/">Room-to-Room (R2R)</a> navigation and <a href="https://arxiv.org/abs/1904.10151">Remote Referring Expression (REVERIE)</a> benchmarks.
+We use <a href="https://github.com/airbert-vln/bnb-dataset/">BnB</a> to pretrain our <a href="https://github.com/airbert-vln/airbert/">Airbert</a> model that can be adapted to discriminative and generative settings and show that it outperforms state of the art for <a href="https://bringmeaspoon.org/">Room-to-Room (R2R)</a> navigation and <a href="https://arxiv.org/abs/1904.10151">Remote Referring Expression (REVERIE)</a> benchmarks.
 Moreover, our in-domain pretraining significantly increases performance on a challenging few-shot VLN evaluation, where we train the model only on VLN instructions from a few houses.
 </p>
       <a class="ui primary large button">Read the paper</a>
@@ -297,7 +297,7 @@ Moreover, our in-domain pretraining significantly increases performance on a cha
       </p>
       <p>
       We propose to use this abundant and curated data for large-scale in-domain VLN pretraining.
-      We collecte and filtere 1.4M images and 0.7M captions from Airbnb.
+      We collect and filter 1.4M images and 0.7M captions from Airbnb.
       Then, we propose methods to transform images and captions into VLN-like path-instruction pairs to reduce the domain gap between webly crawled image-text pairs and VLN tasks.
       </p>
 	</div>
@@ -382,7 +382,6 @@ Moreover, our in-domain pretraining significantly increases performance on a cha
       </div>
     </div>
 </div>
-</div>
 
 
 
@@ -400,6 +399,7 @@ Moreover, our in-domain pretraining significantly increases performance on a cha
           <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
         </div>
       </div>
+    </div>
 </div>
 </div>
 
@@ -417,26 +417,79 @@ Moreover, our in-domain pretraining significantly increases performance on a cha
           <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
         </div>
       </div>
+   </div>
 </div>
 </div>
 
 
-<div class="ui vertical stripe segment">
+<div class="ui vertical stripe segment" id="demo">
 <div class="ui middle aligned stackable grid container">
-      <h1 class="ui header">Demo</h1>
-    <div class="ui middle aligned stackable grid container">
-      <div class="row">
-        <div class="eight wide column">
-          <h2 class="ui header">Discriminative vs generative</h2>
-          <p>
-          </p>
+  <h1 class="ui header">Demo</h1>
+  <div class="ui middle aligned stackable grid container">
+    <div class="two fields">
+      <div class="field">
+
+        <div class="ui checkbox">
+        <input type="checkbox" name="airbert" id="airbert" checked />
+        <label name="airbert">Airbert</label>
         </div>
-        <div class="six wide right floated column">
-          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
+        <br/>
+
+        <div class="ui checkbox">
+        <input type="checkbox" name="vlnbert" id="vlnbert" checked />
+        <label name="vlnbert">VLN-BERT</label>
+        </div>
+        <br/>
+
+        <div class="ui checkbox">
+        <input type="checkbox" name="ground_truth" id="ground_truth" checked />
+        <label name="ground_truth">Ground truth</label>
         </div>
       </div>
+      <div class="seven wide field">
+              <label>Put an integer between 0 and <span id="num_samples">?</span></label>
+        <input type="text" name="index" id="index" maxlength="4" placeholder="Index of the sample">
+      </div>
+    </div>
+    <div disabled class="ui loading button" onclick="go()" id="go" >Load</div>
+
+<div class="ui message">
+  <div class="header">
+    Controls
+  </div>
+  <p>Left-click and drag to move (ESC to toggle between pan and rotate). Up and Down arrows to move the camera up and down. Left arrow will lower the camera near clipping pane (right arrow to raise it).  Reload regularly the application to avoid crashing memory. </p>
+</div>
+
+<div class="ui message" id="stat" style="display: none;">
+  <div class="header">
+    Sample
+  </div>
+  <ul class="list">
+	  <li><b>Id: </b><span id="scan_id"></span></li>
+	  <li><b>Name: </b><span id="scan_name"></span></li>
+	  <li><b>Instr id: </b><span id="instr_id"></span></li>
+	  <li><b>Obj id: </b><span id="obj_id">-</span></li>
+	  <li><b>Instruction: </b><span id="instr"></span></li>
+  </ul>
+</div>
+    <figure style="display: inline-block; width: 100%;">
+      <canvas id="skybox" style="width:auto; display: block; margin: 0 auto;background-color:white;">
+    </figure>
+  </div>
 </div>
 </div>
+
+    <script type="text/javascript" crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.6.0/d3.min.js"></script>
+    <script type="text/javascript" crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r126/three.min.js"></script>
+ <script type="text/javascript" src="lib/RequestAnimationFrame.js"></script>
+    <script type="text/javascript" src="lib/Detector.js"></script>
+    <script type="text/javascript" src="lib/OBJLoader.js"></script>
+    <script type="text/javascript" src="lib/MTLLoader.js"></script>
+      <script type="text/javascript" src="lib/PTZCameraControls.js"></script>
+     <script type="text/javascript" src="lib/Matterport3D.js"></script>
+    <script type="text/javascript" src="lib/Main.js"></script>
+
+
 </body>
 
 </html>
