@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>Airbert - ICCV 2021</title>
+
+  
+    <!-- SEO -->
+  <meta property="og:title" content="Airbert: In-domain Pretraining for Vision-and-Language Navigation" />
+  <meta property="og:type" content="article" />
+  <meta property="og:description" content="SOTA in multiple VLN tasks by pre-training on Airbnb" />
+  <meta property="og:image" content="https://airbert-vln.github.io/assets/img/teaser.jpeg" />
+  <meta property="og:url" content="https://airbert-vln.github.io/" />
+
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Airbert: In-domain Pretraining for Vision-and-Language Navigation" />
+  <meta name="twitter:description" content="SOTA in multiple VLN tasks by pre-training on Airbnb" />
+  <meta name="twitter:image" content="https://airbert-vln.github.io/assets/img/teaser_square.jpeg" />
+
+
+  <!-- You MUST include jQuery before Fomantic -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style type="text/css">
+
+    .hidden.menu {
+      display: none;
+    }
+
+    .masthead.segment {
+      min-height: 700px;
+      padding: 1em 0em;
+    }
+    .masthead .logo.item img {
+      margin-right: 1em;
+    }
+    .masthead .ui.menu .ui.button {
+      margin-left: 0.5em;
+    }
+    .masthead h1.ui.header {
+      margin-top: 3em;
+      margin-bottom: 0em;
+      font-size: 4em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 1.7em;
+      font-weight: normal;
+    }
+/
+    .ui.vertical.stripe {
+      padding: 8em 0em;
+    }
+    .ui.vertical.stripe h3 {
+      font-size: 2em;
+    }
+    .ui.vertical.stripe .button + h3,
+    .ui.vertical.stripe p + h3 {
+      margin-top: 3em;
+    }
+    .ui.vertical.stripe .floated.image {
+      clear: both;
+    }
+    .ui.vertical.stripe p {
+      font-size: 1.33em;
+    }
+    .ui.vertical.stripe .horizontal.divider {
+      margin: 3em 0em;
+    }
+
+    .quote.stripe.segment {
+      padding: 0em;
+    }
+    .quote.stripe.segment .grid .column {
+      padding-top: 5em;
+      padding-bottom: 5em;
+    }
+
+    .footer.segment {
+      padding: 5em 0em;
+    }
+
+    .secondary.pointing.menu .toc.item {
+      display: none;
+    }
+
+    @media only screen and (max-width: 700px) {
+      .ui.fixed.menu {
+        display: none !important;
+      }
+      .secondary.pointing.menu .item,
+      .secondary.pointing.menu .menu {
+        display: none;
+      }
+      .secondary.pointing.menu .toc.item {
+        display: block;
+      }
+      .masthead.segment {
+        min-height: 350px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+
+    p {
+      text-align: justify;
+      font-size: 12pt;
+   }
+
+    .masthead {
+        background-image: url('/assets/img/bg3.jpg') !important;
+        background-size: cover !important;
+    }
+
+    .masthead.segment {
+      min-height: 300px;
+    }
+
+    .masthead h1.ui.header {
+      margin-top: 0em;
+    }
+    .masthead .ui.tex a {
+      margin-bottom: 40px;
+    }
+    .masthead a {
+	    color: #EEE;
+}
+
+
+.ui.small.table {
+    font-size: .8em;
+}
+
+  </style>
+
+  <script>
+  $(document)
+    .ready(function() {
+
+      // fix menu when passed
+      $('.masthead')
+        .visibility({
+          once: false,
+          onBottomPassed: function() {
+            $('.fixed.menu').transition('fade in');
+          },
+          onBottomPassedReverse: function() {
+            $('.fixed.menu').transition('fade out');
+          }
+        })
+      ;
+
+      // create sidebar and attach to menu open
+      $('.ui.sidebar')
+        .sidebar('attach events', '.toc.item')
+      ;
+
+    })
+  ;
+  </script>
+</head>
+<body>
+
+<!-- Following Menu -->
+<div class="ui large top fixed hidden menu">
+  <div class="ui container">
+	<a href="index.html" class="item">
+		<i class="home icon"></i>Home
+	</a>
+	<a href="demo.html" class="item">
+		<i class="robot icon"></i>Demo
+	</a>
+	<a href="paper.html" class="active item">
+		<i class="book icon"></i>Paper
+	</a>
+	<a href="#" class="item">
+		<i class="glasses icon"></i>arXiv
+	</a>
+	<a href="bibtex.txt" class="item">
+		<i class="quote right icon"></i>BibTeX
+	</a>
+  </div>
+</div>
+
+<!-- Sidebar Menu -->
+<div class="ui vertical inverted sidebar menu">
+	<a href="index.html" class="item">
+		<i class="home icon"></i>Home
+	</a>
+	<a href="demo.html" class="item">
+		<i class="robot icon"></i>Demo
+	</a>
+	<a href="paper.html" class="active item">
+		<i class="book icon"></i>Paper
+	</a>
+	<a href="#" class="item">
+		<i class="glasses icon"></i>arXiv
+	</a>
+	<a href="bibtex.txt" class="item">
+		<i class="quote right icon"></i>BibTeX
+	</a>
+  </div>
+
+
+<!-- Page Contents -->
+<div class="pusher">
+  <div class="ui inverted vertical masthead center aligned segment">
+
+    <div class="ui large secondary inverted  pointing menu">
+      <div class="ui container">
+        <a class="toc item">
+          <i class="sidebar icon"></i>
+        </a>
+
+	<a href="index.html" class="item">
+		<i class="home icon"></i>Home
+	</a>
+	<a href="demo.html" class="item">
+		<i class="robot icon"></i>Demo
+	</a>
+	<a href="paper.html" class="active item">
+		<i class="book icon"></i>Paper
+	</a>
+	<a href="#" class="item">
+		<i class="glasses icon"></i>arXiv
+	</a>
+	<a href="bibtex.txt" class="item">
+		<i class="quote right icon"></i>BibTeX
+	</a>
+  
+      </div>
+    </div>
+
+    <div class="ui  text container">
+      <h1 class="ui inverted header">
+        Airbert
+      </h1>
+      <h2>
+In-domain Pretraining for Vision-and-Language Navigation
+      </h2>
+      <h4>
+	      <a href="https://www.linkedin.com/in/pierre-louis-guhur-51130495/">Pierre-Louis Guhur</a>&nbsp;<sup> 🏠</sup>,
+	      <a href="https://makarandtapaswi.github.io/">Makarand Tapaswi</a>&nbsp;<sup>🏠, 🏢 </sup>   ,
+	<a href="https://cshizhe.github.io/">Shizhe Chen</a>&nbsp;<sup>🏠</sup>,
+	<a href="https://www.di.ens.fr/~laptev/">Ivan Laptev&nbsp;<sup> 🏠</sup></a>,
+	<a href="https://www.di.ens.fr/willow/people_webpages/cordelia/">Cordelia Schmid</a>&nbsp;
+			<sup> 🏠, 🛖 </sup>
+      </h4>
+      <h4>
+  🏠   
+  <a href="https://www.inria.fr"> Inria Paris</a>,
+  🏢
+  <a href=https://www.iiit.ac.in"> IIIT Hyderabad</a>,
+  🛖 
+  <a href="https://research.google">Google Research</a>
+  		</h4>
+    </div>
+	<!--	<script>
+			$('.ui.embed').embed({
+			  url: '/assets/video/bg.mp4',
+			  autoplay: "true",
+			});
+		</script>
+		-->
+
+
+  </div>
+
+
+
+  <div class="ui segment" style="border-top: none">
+    <div class="ui text container">
+
+
+      <h1 class="ui header">Abstract</h1>
+<p>
+      Vision-and-language navigation (VLN) aims to enable embodied agents to navigate in realistic environments using natural language instructions.
+Given the scarcity of domain-specific training data and the high diversity of image and language inputs, the generalization of VLN agents to unseen environments remains challenging.
+</p>
+
+<p>
+Recent methods explore pretraining to improve generalization, however, the use of generic image-caption datasets 
+or existing small-scale VLN environments 
+is suboptimal and results in limited improvements.
+</p>
+
+<p>
+In this work, we introduce <a href="https://github.com/airbert-vln/bnb-dataset/">BnB</a>, a large-scale and diverse in-domain VLN dataset. 
+We first collect image-caption (IC) pairs from hundreds of thousands of listings from online rental marketplaces.
+Using IC pairs we next propose automatic strategies to generate millions of VLN path-instruction (PI) pairs.
+We further propose a shuffling loss that improves the learning of temporal order inside PI pairs.
+</p>
+
+<p>
+We use <a href="https://github.com/airbert-vln/bnb-dataset/">BnB</a> to pretrain our <a href="https://github.com/airbert-vln/airbert/">Airbert</a> model that can be adapted to discriminative and generative settings and show that it outperforms state of the art for <a href="https://bringmeaspoon.org/">Room-to-Room (R2R)</a> navigation and <a href="https://arxiv.org/abs/1904.10151">Remote Referring Expression (REVERIE)</a> benchmarks.
+Moreover, our in-domain pretraining significantly increases performance on a challenging few-shot VLN evaluation, where we train the model only on VLN instructions from a few houses.
+</p>
+      <a class="ui primary large button">Read the paper</a>
+      <a class="ui primary basic large button">Supplementary material</a>
+
+
+<div class="ui segment" id="intro">
+      <h1 class="ui header">1. Introduction</h1>
+
+<figure>
+<img src="/assets/img/teaser.svg" alt="VLN tasks are evaluated on unseen environments at test time. Top: None of the training houses contain a Christmas theme making this test environment particularly challenging. Bottom: We build a large-scale, visually diverse, and in-domain dataset by creating path-instruction pairs close to a VLN-like setup and show the benefits of self-supervised pretraining." /><figcaption>Figure 1: VLN tasks are evaluated on unseen environments at test time. <em>Top</em>: None of the training houses contain a Christmas theme making this test environment particularly challenging. <em>Bottom</em>: We build a large-scale, visually diverse, and in-domain dataset by creating path-instruction pairs close to a VLN-like setup and show the benefits of self-supervised pretraining.</figcaption>
+</figure>
+
+<p>In vision-and-language navigation (VLN), an agent is asked to navigate in home environments following natural language instructions <span class="citation" data-cites="anderson2018evaluation anderson2018r2r">[1], [2]</span>. This task is attractive to many real-world applications such as domestic robotics and personal assistants. However, given the high diversity of VLN data across environments and the difficulty of the manual collection and annotation of VLN training data at scale, the performance of current methods remains limited, especially for previously unseen environments <span class="citation" data-cites="zhangdiagnosing">[3]</span>.</p>
+<p>Our work is motivated by significant improvements in vision and language pretraining <span class="citation" data-cites="alberti2019b2t2 chen2020uniter li2020oscar lu2019vilbert lu2020_12in1 su2019vlbert">[4]–[9]</span>, where deep transformer models <span class="citation" data-cites="vaswani2017attention">[10]</span> are trained via self-supervised proxy tasks <span class="citation" data-cites="devlin2018bert">[11]</span> using large-scale, automatically harvested image-text datasets <span class="citation" data-cites="ordonez2011sbu ConceptualCaptions">[12], [13]</span>. Such pretraining enables learning transferable multi-modal representations achieving state-of-the-art performance in various vision and language tasks. Similarly, with the goal of learning an embodied agent that generalizes, recent works <span class="citation" data-cites="hao2020prevalent huang2019transferable li2019press majumdar2020vlnbert">[14]–[17]</span> have explored different pretraining approaches for VLN tasks.</p>
+<p>In <span class="citation" data-cites="hao2020prevalent huang2019transferable">[14], [15]</span>, annotated path-instruction pairs are augmented with a <em>speaker</em> model that generates instructions for random unseen paths. However, as these paths originate from a small set of 61 houses used during training, they are limited in visual diversity. The limited pretraining environments do not equip agents with visual understanding abilities that enable generalization to unseen houses, see Fig. <a href="#fig:teaser" data-reference-type="ref" data-reference="fig:teaser">1</a>. To address this problem, VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span> proposes to pretrain the agent on generic image-caption datasets that are abundant and cover diverse visio-linguistic knowledge. However, these image-caption pairs are quite different from the dynamic visual stream (path) and navigable instructions observed by a VLN agent, and such out-of-domain pretraining, although promising, only brings limited gains to the navigation performance. Besides the above limitations, existing pretraining methods do not place much emphasis on temporal reasoning abilities in their self-supervised proxy tasks such as one-step action prediction <span class="citation" data-cites="hao2020prevalent">[14]</span> and path-instruction pairing <span class="citation" data-cites="majumdar2020vlnbert">[17]</span>, while such reasoning is important to a sequential decision making task like VLN. As a result, even if performance in downstream tasks is improved, the pretrained models may still be brittle. For example, a simple corruption of instructions by swapping noun phrases within the instruction, or replacing them with other nouns, leads to significant confusion as models are unable to pick the correct original pair.</p>
+<p>In this paper, we explore a different data source and proxy tasks to address the above limitations in pretraining a generic VLN agent. Though navigation instructions are rarely found on the Internet, image-caption pairs from home environments are abundant in online marketplaces (<em>e.g</em>.. <em>Airbnb</em>), which include images and descriptions of rental listings. We collect BnB, a new large-scale dataset with 1.4M indoor images and 0.7M captions. First, we show that in-domain image-caption pairs bring additional benefits for downstream VLN tasks when applied with generic web data <span class="citation" data-cites="majumdar2020vlnbert">[17]</span>. In order to further reduce the domain gap between the BnB pretraining and the VLN task, we present an approach to transform static image-caption pairs into visual paths and navigation-like instructions (Fig. <a href="#fig:teaser" data-reference-type="ref" data-reference="fig:teaser">1</a> bottom), leading to large additional performance gains. We also propose a shuffling loss that improves the model’s temporal reasoning abilities by learning a temporal alignment between a path and the corresponding instruction.</p>
+<p>Our pretrained model, Airbert, is a generic transformer backbone that can be readily integrated in both discriminative VLN tasks such as path-instruction compatibility prediction <span class="citation" data-cites="majumdar2020vlnbert">[17]</span> and generative VLN tasks <span class="citation" data-cites="hong2021recurrentvln">[18]</span> in R2R navigation <span class="citation" data-cites="anderson2018r2r">[2]</span> and REVERIE remote referring expression <span class="citation" data-cites="qi2020reverie">[19]</span>. We achieve state-of-the-art performance on these VLN tasks with our pretrained model. Beyond the standard evaluation, our in-domain pretraining opens an exciting new direction of <em>one/few-shot VLN</em> where the agent is trained on examples only from one/few environment(s) and expected to generalize to other unseen environments.</p>
+<p>In summary, the contributions of this work are three-fold. (1) We collect a new large-scale in-domain dataset, BnB, to promote pretraining for vision-and-language navigation tasks. (2) We curate the dataset in different ways to reduce the distribution shift between pretraining and VLN and also propose the shuffling loss to improve temporal reasoning abilities. (3) Our pretrained Airbert can be plugged into generative or discriminative architectures and achieves state-of-the-art performance on R2R and REVERIE datasets. Moreover, our model generalizes well under a challenging one/few-shot VLN evaluation, truly highlighting the capabilities of our learning paradigm. We will release the code, model, and data.</p>
+</div> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ui segment" id="bnb_dataset">
+      <h1 class="ui header">2. Related Work</h1>
+
+<p><strong>Vision-and-language navigation.</strong> VLN <span class="citation" data-cites="anderson2018r2r">[2]</span> has received significant attention with a large number of followup tasks introduced in recent years <span class="citation" data-cites="anderson2018evaluation chen2019touchdown krantz2020r2rce ku2020rxr nguyen2019hanna nguyen2019vlna qi2020reverie shridhar2020alfred thomason2020cvdn">[1], [19]–[26]</span>. Early days of VLN saw the use of sequence-to-sequence LSTMs to predict low-level actions <span class="citation" data-cites="anderson2018r2r">[2]</span> or high-level directions in a panoramic action space <span class="citation" data-cites="fried2018speaker">[27]</span>. For better cross-modal alignment, a visio-linguistic co-grounding attention mechanism is proposed in <span class="citation" data-cites="ma2019self">[28]</span>, and instructions are further disentangled into objects and directions in <span class="citation" data-cites="qi2020object">[29]</span>. To alleviate exposure bias in supervised training of the agent, reinforcement learning has been adopted through planning <span class="citation" data-cites="wang2018look">[30]</span>, REINFORCE <span class="citation" data-cites="wang2019reinforced">[31]</span>, A2C <span class="citation" data-cites="tan2019envdrop">[32]</span> and reward learning <span class="citation" data-cites="wang2020serl">[33]</span>. A few works also explore different search algorithms such as backtracking by monitoring progress <span class="citation" data-cites="ma2019self ma2019regretful">[28], [34]</span> or beam search <span class="citation" data-cites="fried2018speaker ke2019tactical tan2019envdrop">[27], [32], [35]</span> in environment exploration.</p>
+<p>To improve an agent’s generalization to unseen environments, data augmentation is performed by using a <em>speaker</em> model <span class="citation" data-cites="fried2018speaker">[27]</span> that generates instructions for random paths in seen environments, and environment dropout <span class="citation" data-cites="tan2019envdrop">[32]</span> is used to mimic new environments. While pretraining LSTMs to learn vision and language representations is adopted by <span class="citation" data-cites="huang2019transferable">[15]</span>, recently, there has been a shift towards transformer models <span class="citation" data-cites="hao2020prevalent">[14]</span> to learn generic multimodal representations. This is further extended to a recurrent model that significantly improves sequential action prediction <span class="citation" data-cites="hong2021recurrentvln">[18]</span>. However, the limited environments in pretraining <span class="citation" data-cites="hao2020prevalent huang2019transferable">[14], [15]</span> constrain the generalization ability to unseen scenarios. Most related to this work, VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span> transfers knowledge from abundant, but out-of-domain image-text data to improve path-instruction matching. In this work, we not only create a large-scale, in-domain BnB dataset to improve visual diversity, but also propose effective pretraining strategies to mitigate the domain-shift between webly crawled image-text pairs and VLN data.</p>
+<p><strong>Large-scale visio-linguistic pretraining.</strong> Thanks to large-scale vision-language pairs automatically collected from the web <span class="citation" data-cites="miech2019howto100m ordonez2011sbu radford2021learning ConceptualCaptions">[12], [13], [36], [37]</span>, visio-linguistic pretraining (VLP) has made great breakthroughs in recent years towards learning transferable multimodal representations. Several VLP models <span class="citation" data-cites="chen2020uniter li2020oscar lu2019vilbert tan2019lxmert">[5]–[7], [38]</span> have been proposed based on the transformer architecture <span class="citation" data-cites="vaswani2017attention">[10]</span>. These models are often pretrained with self-supervised objectives akin to those in BERT <span class="citation" data-cites="devlin2018bert">[11]</span>: masked language modeling, masked region modeling and vision-text pairing. Fine-tuning them on downstream datasets achieves state-of-the-art performance on various VL tasks <span class="citation" data-cites="antol2015vqa kazemzadeh2014referitgame wang2016learning vinyals2016show">[39]–[42]</span>. While such pretraining focuses on learning correlations between vision and text, it is not designed for sequential decision making as required in embodied VLN. The goal of this work is not to improve VLP architectures but to present in-domain training strategies that lead to performance improvements for VLN tasks.</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ui segment" id="bnb_dataset">
+
+  <div class="left ui rail" style="">
+    <p> The number images from Matterport environments <span class="citation" data-cites="Matterport3D">[44]</span> refers to the number of panoramas. The speaker model <span class="citation" data-cites="tan2019envdrop">[32]</span> generates instructions for randomly selected trajectories, but is limited to panoramas from 60 training environments. Note that the data from Conceptual Captions (ConCaps) may feature some houses, but it is not the main category. </p>
+    <div class="ui sticky">
+    <h4 class="ui header" id="tab:bnb_dataset_cmpr">Table 1: Comparing BnB to other existing VLN datasets</h4>
+    <table class="ui small striped table" style="table-layout: fixed">
+    <thead>
+    <tr class="header">
+    <th style="text-align: left;">Dataset</th>
+    <th style="text-align: left;">Source</th>
+    <th style="text-align: center;">#Envs</th>
+    <th style="text-align: center;">#Imgs</th>
+    <th style="text-align: center;">#Texts</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="odd">
+    <td style="text-align: left;">R2R <span class="citation" data-cites="anderson2018r2r">[2]</span></td>
+    <td style="text-align: left;">Matterport</td>
+    <td style="text-align: center;">90</td>
+    <td style="text-align: center;">10.8K</td>
+    <td style="text-align: center;">21.7K</td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: left;">REVERIE <span class="citation" data-cites="qi2020reverie">[19]</span></td>
+    <td style="text-align: left;">Matterport</td>
+    <td style="text-align: center;">86</td>
+    <td style="text-align: center;">10.6K</td>
+    <td style="text-align: center;">10.6K</td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: left;">Speaker <span class="citation" data-cites="tan2019envdrop">[32]</span></td>
+    <td style="text-align: left;">Matterport</td>
+    <td style="text-align: center;">60</td>
+    <td style="text-align: center;">7.8K</td>
+    <td style="text-align: center;">0.2M</td>
+    </tr>
+    <tr class="even">
+    <td style="text-align: left;">ConCaps <span class="citation" data-cites="ConceptualCaptions">[13]</span></td>
+    <td style="text-align: left;">Web</td>
+    <td style="text-align: center;">-</td>
+    <td style="text-align: center;">3.3M</td>
+    <td style="text-align: center;">3.3M</td>
+    </tr>
+    <tr class="odd">
+    <td style="text-align: left;"><strong>BnB</strong> (ours)</td>
+    <td style="text-align: left;">Airbnb</td>
+    <td style="text-align: center;">140K</td>
+    <td style="text-align: center;">1.4M</td>
+    <td style="text-align: center;">0.7M</td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
+  </div>
+
+      <h1 class="ui header">3. BnB Dataset </h1>
+
+
+<p>Hosts that rent places on online marketplaces often upload attractive and unique photos along with descriptions. One such marketplace, <em>Airbnb</em>, has 5.6M listings from over 100K cities all around the world <span class="citation" data-cites="airbnb">[43]</span>. We propose to use this abundant and curated data for large-scale in-domain VLN pretraining. In this section, we first describe how we collect image-caption pairs from <em>Airbnb</em>. Then, we propose methods to transform images and captions into VLN-like path-instruction pairs to reduce the domain gap between webly crawled image-text pairs and VLN tasks (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">2</a>).</p>
+
+
+
+
+<figure>
+      <img  class="ui fluid image" src="/assets/img/dataset.svg" />
+      <figcaption>Figure 2: We explore several strategies to automatically create navigation-like instructions from image-caption pairs. </figcaption>
+</figure>
+
+      <h2 class="ui header">3.1. Collecting BnB Image-Caption Pairs</h2>
+
+      <p>
+      <strong>Collection process.</strong> We restrict our dataset to listings from the US (about 10% of <em>Airbnb</em>) to ensure high quality English captions and visual similarity with Matterport environments <span class="citation" data-cites="Matterport3D">[44]</span>. The data collection proceeds as follows: (1) obtain a list of locations from Wikipedia; (2) find listings in these locations by querying the <em>Airbnb</em> search engine; (3) download listings and their metadata; (4) remove <em>outdoors</em> images<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> as classified by a ResNet model pretrained on Places365 <span class="citation" data-cites="zhou2017places">[45]</span>; and (5) remove invalid image captions such as emails, URLs and duplicates.</p>
+
+<p><strong>Statistics.</strong> We downloaded almost 150k listings and their metadata (1/4 of the listings in the US) in step 3, leading to over 3M images and 1M captions. After data cleaning with steps 4 and 5, we obtain 713K image-caption pairs and 676K images without captions. Table <a href="#tab:bnb_dataset_cmpr" data-reference-type="ref" data-reference="tab:bnb_dataset_cmpr">2</a> compares our BnB dataset to other datasets used in previous works for VLN (pre-)training. It is larger than R2R <span class="citation" data-cites="anderson2018r2r">[2]</span>, REVERIE <span class="citation" data-cites="qi2020reverie">[19]</span> and includes a large diversity of rooms and objects, which is not the case for Conceptual Captions <span class="citation" data-cites="ConceptualCaptions">[13]</span>. We posit that such in-domain data is crucial to deal with the data scarcity challenge in VLN environments as illustrated <a href="#motivation">above</a>. We use 95% of our BnB dataset for training and the remaining 5% for validation.</p>
+<p>Apart from images and captions, our collected listings contain structured data including a list of amenities, a general description, reviews, location, and rental price, which may offer additional applications in the future. More details about the dataset and examples are presented in the supplementary material.</p>
+
+
+      <h2 class="ui header">3.2. Creating BnB Path-Instruction Pairs</h2>
+
+<p>
+BnB image-caption (IC) pairs are complementary to Conceptual Captions (ConCaps) as they capture diverse VLN environments. However, they still have large differences from path-instruction (PI) pairs in VLN tasks. For example, during navigation, an agent observes multiple panoramic views of a sequence of locations rather than a single image, and the instruction may contain multiple sentences describing different locations along the way. To mitigate this domain gap, we propose strategies to automatically craft path-instruction pairs starting from BnB-IC pairs.</p>
+      <h3 class="ui header">Building path-instruction pairs</h3>
+
+
+<p>Images in a BnB listing usually depict different locations in a house, mimicking the sequential visual observations an agent makes while navigating in the house. To create a VLN-like path-instruction pair, we randomly select and concatenate <span class="math inline"><em>K</em></span><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> image-caption pairs from the listing . In between each caption, we randomly add a word from “<em>and</em>”, “<em>then</em>”, “.” or nothing to make the concatenated instruction more fluent and diverse.</p>
+
+          <h3 class="ui header">Augmenting <em>Paths</em> with Visual Contexts</h3>
+<p>In the above concatenated path, each location only contains one BnB image, and perhaps with a limited view angle as hosts may focus on objects or amenities they wish to highlight. Therefore, it lacks the panoramic visual context at each location that the agent receives in real navigation paths. Moreover, each location in the concatenated instruction is described by a unique sentence, while adjacent locations are often expressed together in one sentence in VLN instructions <span class="citation" data-cites="hong2020fgr2r">[46]</span>. To address the above issues with concatenation, we propose two approaches to compose paths that have more visual context and can also leverage the abundant images without captions (denoted as <em>captionless images</em>).</p>
+
+		<p><strong>Image merging</strong> extends the panoramic context of a location by grouping images from similar room categories (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">2</a>). For example, if the image depicts a kitchen sink, it is natural to expect images of other objects such as forks and knives nearby. Specifically, we first cluster images of similar categories (<em>e.g</em>.. <em>kitchen</em>) using room labels predicted by a pretrained Places365 model <span class="citation" data-cites="zhou2017places">[45]</span>. Then, we extract multiple regions from this <em>merged</em> set of images, and use them as an approximation to the panoramic visual representation.</p>
+
+<p><strong>Captionless image insertion.</strong> The Table 1 shows that half of the BnB images are captionless. Using them allows to increase the size of the dataset. When creating a path-instruction pair from the concatenation approach, a captionless image is inserted as if its caption was an empty string. The BnB PI pairs hence generated better approximate the distribution of the R2R path-instructions: (1) some images in the path are not described and (2) instructions have similar number of noun phrases.</p>
+
+          <h3 class="ui header">Crafting <em>Instructions</em> with Fluent Transitions</h3>
+<p>The concatenated captions mainly describe rooms or objects at different locations, but do not contain any of the actionable verbs as in navigation instructions, <em>e.g</em>.. “<em>turn left at the door</em>” or “<em>walk straight down the corridor</em>”. We suggest two strategies to create fake instructions that have fluent transitions between sentences.</p>
+
+
+<p><strong>Instruction rephrasing.</strong> We use a fill-in-the-blanks approach to replace noun-phrases in human annotated navigation instructions <span class="citation" data-cites="anderson2018r2r">[2]</span> by those in BnB captions (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">2</a>). Concretely, we create more than 10K instruction templates containing 2-7 blanks, and fill the blanks with noun-phrases extracted from BnB captions. The noun-phrases matched to object categories from the Visual Genome <span class="citation" data-cites="krishna2017vg">[47]</span> dataset are preferred during selection. This allows us to create VLN-like instructions with actionable verbs interspersed with room and object references for visual cues that are part of the BnB path (see Fig. <a href="#fig:dataset" data-reference-type="ref" data-reference="fig:dataset">2</a>).</p>
+
+<p><strong>Instruction rephrasing.</strong> It is a video captioning like model that takes in a sequence of images and generates an instruction corresponding to an agent’s path through an environment. To train this model, we adopt ViLBERT and train it to generate captions for single BnB image-caption pairs. Further, this model is fine-tuned on trajectories of the R2R dataset to generate corresponding instructions. Finally, we use this model to generate BnB PI pairs by producing an instruction for a concatenated image sequence from BnB (the path).</p>
+
+</div>
+<script>
+$('.ui.sticky')
+  .sticky({
+    context: '#bnb_dataset'
+  })
+;
+</script>
+
+
+
+
+<div class="ui  segment">
+      <h1 class="ui header">4. Airbert: A Pretrained VLN Model</h1>
+
+<figure>
+   <img  class="ui fluid image" src="/assets/img/pretraining.svg" />
+   <figcaption>
+      Figure 3: We explore several strategies to automatically create navigation-like instructions from image-caption pairs.
+   </figcaption>
+</figure>
+
+<p>In this section, we present Airbert, our multi-modal transformer pretrained on the BnB dataset with masking and shuffling losses. We first introduce the architecture of Airbert, and then describe datasets and pretext tasks in pretraining. Finally, we show how Airbert can be adapted to downstream VLN tasks.</p>
+
+          <h2 class="ui header">4.1. ViLBERT-like Architecture</h2>
+<p> ViLBERT <span class="citation" data-cites="lu2019vilbert">[7]</span> is a multi-modal transformer extended from BERT <span class="citation" data-cites="devlin2018bert">[11]</span> to learn joint visio-linguistic representations from image-text pairs, as illustrated in Fig. <a href="#fig:model" data-reference-type="ref" data-reference="fig:model">3</a>.</p>
+
+<p>Given an image-text pair <span class="math inline">(<em>V</em>, <em>C</em>)</span>, the model encodes the image as region features <span class="math inline">[<em>v</em><sub>1</sub>, …, <em>v</em><sub>𝒱</sub>]</span> via a pretrained Faster R-CNN <span class="citation" data-cites="anderson2017butd">[48]</span>, and embeds the text as a series of tokens: <span class="math inline">[<code>[CLS]</code>, <em>w</em><sub>1</sub>, …, <em>w</em><sub><em>T</em></sub>, <code>[SEP]</code>]</span>, where <code>[CLS]</code>and <code>[SEP]</code>are special tokens added to the text. ViLBERT contains two separate transformers that encode <span class="math inline"><em>V</em></span> and <span class="math inline"><em>C</em></span> and it learns cross-modal interactions via co-attention <span class="citation" data-cites="lu2019vilbert">[7]</span>.</p>
+
+<p>We follow a similar strategy to encode path-instruction pairs (created in Sec. <a href="#sec:create_pi_pairs" data-reference-type="ref" data-reference="sec:create_pi_pairs">3.1</a>) that contain multiple images and captions <span class="math inline">{(<em>V</em><sub><em>k</em></sub>, <em>C</em><sub><em>k</em></sub>)}<sub><em>k</em> = 1</sub><sup><em>K</em></sup></span>. Here, each <span class="math inline"><em>V</em><sub><em>k</em></sub></span> is represented as visual regions <span class="math inline"><em>v</em><sub><em>i</em></sub><sup><em>k</em></sup></span> and <span class="math inline"><em>C</em><sub><em>k</em></sub></span> as word tokens <span class="math inline"><em>w</em><sub><em>t</em></sub><sup><em>k</em></sup></span>. Respectively, the visual and text inputs to Airbert are: <span> <br /><span class="math display">$$\begin{aligned}
+X_V &amp;= [\texttt{[IMG]}, v^1_1, \ldots, v^1_{\mathcal{V}_1}, \ldots, \texttt{[IMG]}, v^K_1, \ldots, v^K_{\mathcal{V}_K}], \\
+X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K_{T_K}, \texttt{[SEP]}] ,\end{aligned}$$</span><br /></span> where the <code>[IMG]</code> token is used to separate image region features taken at different locations.</p>
+
+<p>Note that while our approach is not limited to a ViLBERT-like architecture, we choose ViLBERT for a fair comparison with previous work <span class="citation" data-cites="majumdar2020vlnbert">[15]</span>.</p>
+
+          <h2 class="ui header">4.2. Datasets and Pretext Tasks for Pretraining</h2>
+<p>We use Conceptual Captions (ConCaps) <span class="citation" data-cites="ConceptualCaptions">[37]</span> and BnB-PI in subsequent pretraining steps (see Fig. <a href="#fig:model" data-reference-type="ref" data-reference="fig:model">[fig:model]</a>) to reduce the domain gap for downstream VLN tasks.</p>
+
+<p>Previous multi-modal pretraining efforts <span class="citation" data-cites="lu2019vilbert majumdar2020vlnbert huang2019transferable">[7], [15], [17]</span> commonly use two self-supervised losses given image-caption (IC) pairs or path-instruction (PI) pairs: (1) <em>Masking</em> loss: An input image region or word is randomly replaced by a <code>[MASK]</code> token. The output feature of this masked token is trained to predict the region label or the word given its multi-modal context. (2) <em>Pairing</em> loss: Given the output features of <code>[IMG]</code>and <code>[CLS]</code> tokens, a binary classifier is trained to predict whether the image (path) and caption (instruction) are paired.</p>
+
+<p>The above two pretext tasks mainly focus on learning object-word associations instead of reasoning about the temporal order of paths and instructions. For example, if an image <span class="math inline"><em>V</em><sub><em>i</em></sub></span> appears before <span class="math inline"><em>V</em><sub><em>j</em></sub></span>, then words from its caption <span class="math inline"><em>C</em><sub><em>i</em></sub></span> should appear before <span class="math inline"><em>C</em><sub><em>j</em></sub></span>. In order to promote such a temporal reasoning ability, we propose an additional <em>shuffling</em> loss to enforce alignment between PI pairs.</p>
+
+<p>Given an aligned PI pair <span class="math inline"><em>X</em><sup>+</sup> = {(<em>V</em><sub><em>k</em></sub>, <em>C</em><sub><em>k</em></sub>)}<sub><em>k</em> = 1</sub><sup><em>K</em></sup></span>, we generate <span class="math inline">𝒩</span> negative pairs <span class="math inline"><em>X</em><sub><em>n</em></sub><sup>−</sup> = {(<em>V</em><sub><em>k</em></sub>, <em>C</em><sub><em>l</em></sub>)}, <em>k</em> ≠ <em>l</em></span>, by shuffling the composed images or the captions. We train our model to choose the aligned PI pair as compared to the shuffled negatives by minimizing the cross-entropy loss: <br /><span class="math display">$$L = -\log \frac{\exp(f(X^+))}{\exp(f(X^+)) + \sum_n \exp(f(X^-_n))} \, ,$$</span><br /> where <span class="math inline"><em>f</em>(<em>X</em>)</span> denotes the similarity score (logit) computed via Airbert for some PI pair <span class="math inline"><em>X</em></span>.</p>
+
+          <h2 class="ui header">4.3. Adaptations for Downstream VLN tasks</h2>
+<p>We consider two VLN tasks: goal-oriented navigation (R2R <span class="citation" data-cites="anderson2018r2r">[2]</span>) and object-oriented navigation (REVERIE <span class="citation" data-cites="qi2020reverie">[19]</span>). Airbert can be readily integrated in discriminative and generative models for the above VLN tasks.</p>
+
+<p>The navigation problem on the R2R dataset is formulated as a path selection task in <span class="citation" data-cites="majumdar2020vlnbert">[15]</span>. Several candidate paths are generated via beam search from a navigation agent such as <span class="citation" data-cites="tan2019envdrop">[32]</span>, and a discriminative model is trained to choose the best path among them. We fine-tune Airbert on the R2R dataset for path selection. A two-stage fine-tuning process is adopted: in the first phase, we use <em>masking</em> and <em>shuffling</em> losses on the PI pairs of the target VLN dataset in a manner similar to BnB PI pairs; in the second phase, we choose a positive candidate path as one that arrives within 3m of the goal, and contrast it against 3 negative candidate paths. We also compare multiple strategies to mine additional negative pairs (other than the 3 negative candidates), and in fact, empirically show that negatives created using shuffling outperform other options.</p>
+
+<p><strong>Generative Model: Recurrent VLN-BERT <span class="citation" data-cites="hong2021recurrentvln">[18]</span>.</strong> The Recurrent VLN-BERT model adds recurrence to a state in the transformer to sequentially predict actions, achieving state-of-the-art performance on R2R and REVERIE tasks. We use our Airbert architecture as its backbone and apply it to the two tasks as follows. First, the language transformer encodes the instruction via self-attention. Then, the embedded <code>[CLS]</code> token in the instruction is used to track history and concatenated with visual tokens (observable navigable views or objects) in each action step. Self-attention and cross-attention on embedded instructions are employed to update the state and visual tokens and the attention score from the state token to visual tokens is used to decide the action at each step. We fine-tune the Recurrent VLN-BERT model with Airbert as the backbone in the same way as <span class="citation" data-cites="hong2021recurrentvln">[18]</span>.</p>
+<p>Please refer to the supplementary material for additional details about the models and their implementation.</p>
+          </p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ui segment" id="xp">
+      <h1 class="ui header">Experimental Results</h1>
+
+  <div class="left ui rail" style="">
+    <div class="ui sticky results">
+<table class="ui small striped table">
+<caption>Table 2: Comparison between various BnB PI pair creation strategies for pretraining. The first row denotes the use of image-caption pairs. All methods from the second row use masking and shuffling during pretraining. Cat: naive concatenation; Rep: instruction rephrasing; Gen: instruction generation; Merge: image merging; and Insert: captionless image insertion.</caption>
+<tbody>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Rep</td>
+<td style="text-align: center;">Gen</td>
+<td style="text-align: center;">Merge</td>
+<td style="text-align: center;">Insert</td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">71.21</td>
+<td style="text-align: center;">62.45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">73.84</td>
+<td style="text-align: center;">62.71</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">72.67</td>
+<td style="text-align: center;">63.35</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">71.19</td>
+<td style="text-align: center;">63.11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">70.51</td>
+<td style="text-align: center;">64.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">74.43</td>
+<td style="text-align: center;">66.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">7</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">73.57</td>
+<td style="text-align: center;"><strong>66.52</strong></td>
+</tr>
+</tbody>
+</table>
+
+
+<table class="ui small striped table">
+<caption>Table 4: Comparison between different strategies for fine-tuning a ViLBERT model on the R2R task. VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span> fine-tunes ViLBERT with a masking and ranking loss. Each row (described in the text) is an independent data augmentation and can be compared directly against the baseline (row 1). </caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Fine-tuning</td>
+<td style="text-align: center;">Additional</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Strategies</td>
+<td style="text-align: center;">Negatives</td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">VLN-BERT  <span class="citation" data-cites="majumdar2020vlnbert">[17]</span></td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">70.20</td>
+<td style="text-align: center;">59.26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">(1) + Wrong trajectories</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">70.11</td>
+<td style="text-align: center;">59.11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">(1) + Highlight keywords</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">71.89</td>
+<td style="text-align: center;">61.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">(1) + Hard negatives</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">71.89</td>
+<td style="text-align: center;">61.63</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">(1) + Shuffling (Ours)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">72.46</td>
+<td style="text-align: center;"><strong>61.98</strong></td>
+</tr>
+</tbody>
+</table>
+    </div>
+  </div>
+
+  
+  <div class="right ui rail" style="">
+    <div class="ui sticky results">
+<table class="ui small striped table">
+<caption>Table 3: Impact of shuffling during pretraining and fine-tuning. While additional data helps, we see that using the shuffling loss (abbreviated as Shuf.) consistently improves model performance. Row 1 corresponds to VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span>. </caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">Mask</td>
+<td style="text-align: center;">Shuf.</td>
+<td style="text-align: center;">Rank</td>
+<td style="text-align: center;">Shuf.</td>
+<td style="text-align: center;">Rank</td>
+<td style="text-align: center;">Shuf.</td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">70.20</td>
+<td style="text-align: center;">59.26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">73.24</td>
+<td style="text-align: center;">64.21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">73.57</td>
+<td style="text-align: center;">66.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">74.69</td>
+<td style="text-align: center;">66.90</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">70.21</td>
+<td style="text-align: center;">65.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">73.83</td>
+<td style="text-align: center;"><strong>68.67</strong></td>
+</tr>
+</tbody>
+</table>
+
+<table class="ui small striped table">
+<caption>Table 5: Accuracy of models attempting to pick the correct PI pair from a pool of correct + 10 negatives created by simple corruptions such as replacing or swapping noun phrases and switching directions (left with right). Random performance is <span class="math inline">$\frac{1}{11}$</span> or 9.1%.</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">VLN-BERT</td>
+<td style="text-align: center;">60.3</td>
+<td style="text-align: center;">58.7</td>
+<td style="text-align: center;">53.4</td>
+<td style="text-align: center;">52.3</td>
+<td style="text-align: center;">46.2</td>
+<td style="text-align: center;">45.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Airbert</td>
+<td style="text-align: center;">68.3</td>
+<td style="text-align: center;">66.6</td>
+<td style="text-align: center;">66.6</td>
+<td style="text-align: center;">61.1</td>
+<td style="text-align: center;">47.3</td>
+<td style="text-align: center;">49.8</td>
+</tr>
+</tbody>
+</table>
+
+<table class="ui small striped table">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">VLN-BERT</td>
+<td style="text-align: center;">Speaker</td>
+<td style="text-align: center;">Follower</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="citation" data-cites="majumdar2020vlnbert">[17]</span></td>
+<td style="text-align: center;"><span class="citation" data-cites="tan2019envdrop">[32]</span></td>
+<td style="text-align: center;"><span class="citation" data-cites="tan2019envdrop">[32]</span></td>
+<td style="text-align: center;">PL</td>
+<td style="text-align: center;">NE</td>
+<td style="text-align: center;">SPL</td>
+<td style="text-align: center;">OSR</td>
+<td style="text-align: center;">SR</td>
+<td style="text-align: center;">PL</td>
+<td style="text-align: center;">NE</td>
+<td style="text-align: center;">SPL</td>
+<td style="text-align: center;">OSR</td>
+<td style="text-align: center;">SR</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">10.28</td>
+<td style="text-align: center;">3.73</td>
+<td style="text-align: center;">0.66</td>
+<td style="text-align: center;">76.47</td>
+<td style="text-align: center;">70.20</td>
+<td style="text-align: center;">9.60</td>
+<td style="text-align: center;">4.10</td>
+<td style="text-align: center;">0.55</td>
+<td style="text-align: center;">69.22</td>
+<td style="text-align: center;">59.26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">10.59</td>
+<td style="text-align: center;">3.21</td>
+<td style="text-align: center;">0.69</td>
+<td style="text-align: center;">80.71</td>
+<td style="text-align: center;"><strong>73.85</strong></td>
+<td style="text-align: center;">10.03</td>
+<td style="text-align: center;">3.24</td>
+<td style="text-align: center;">0.63</td>
+<td style="text-align: center;">78.45</td>
+<td style="text-align: center;"><strong>68.67</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">10.69</td>
+<td style="text-align: center;">2.72</td>
+<td style="text-align: center;">0.70</td>
+<td style="text-align: center;">82.94</td>
+<td style="text-align: center;">74.22</td>
+<td style="text-align: center;">10.10</td>
+<td style="text-align: center;">3.32</td>
+<td style="text-align: center;">0.63</td>
+<td style="text-align: center;">76.63</td>
+<td style="text-align: center;">67.90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">10.61</td>
+<td style="text-align: center;">2.35</td>
+<td style="text-align: center;">0.78</td>
+<td style="text-align: center;">86.57</td>
+<td style="text-align: center;"><strong>81.86</strong></td>
+<td style="text-align: center;">10.00</td>
+<td style="text-align: center;">2.76</td>
+<td style="text-align: center;">0.68</td>
+<td style="text-align: center;">81.91</td>
+<td style="text-align: center;">73.61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">10.63</td>
+<td style="text-align: center;">2.13</td>
+<td style="text-align: center;">0.77</td>
+<td style="text-align: center;">87.17</td>
+<td style="text-align: center;"><strong>81.40</strong></td>
+<td style="text-align: center;">9.99</td>
+<td style="text-align: center;">2.69</td>
+<td style="text-align: center;">0.70</td>
+<td style="text-align: center;">82.89</td>
+<td style="text-align: center;"><strong>75.01</strong></td>
+</tr>
+</tbody>
+</table>
+
+<table class="ui small striped table">
+<caption>Table 8: Navigation performance on the R2R unseen test set as indicated on the benchmark leaderboard.</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">PL</td>
+<td style="text-align: center;">NE</td>
+<td style="text-align: center;">SPL</td>
+<td style="text-align: center;">OSR</td>
+<td style="text-align: center;">SR</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Speaker-Follower <span class="citation" data-cites="fried2018speaker">[27]</span></td>
+<td style="text-align: center;">1,257</td>
+<td style="text-align: center;">4.87</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">96</td>
+<td style="text-align: center;">53</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PreSS <span class="citation" data-cites="li2019press">[16]</span></td>
+<td style="text-align: center;">10.5</td>
+<td style="text-align: center;">24.5</td>
+<td style="text-align: center;">0.63</td>
+<td style="text-align: center;">57</td>
+<td style="text-align: center;">53</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PREVALENT <span class="citation" data-cites="hao2020prevalent">[14]</span></td>
+<td style="text-align: center;">10.21</td>
+<td style="text-align: center;">4.52</td>
+<td style="text-align: center;">0.56</td>
+<td style="text-align: center;">64</td>
+<td style="text-align: center;">59</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Self-Monitoring <span class="citation" data-cites="ma2019self">[28]</span></td>
+<td style="text-align: center;">373</td>
+<td style="text-align: center;">4.48</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">97</td>
+<td style="text-align: center;">61</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Reinforced CM <span class="citation" data-cites="wang2019reinforced">[31]</span></td>
+<td style="text-align: center;">358</td>
+<td style="text-align: center;">4.03</td>
+<td style="text-align: center;">0.02</td>
+<td style="text-align: center;">96</td>
+<td style="text-align: center;">63</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">EnvDrop <span class="citation" data-cites="anderson2018r2r">[2]</span></td>
+<td style="text-align: center;">687</td>
+<td style="text-align: center;">3.26</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">99</td>
+<td style="text-align: center;">69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AuxRN <span class="citation" data-cites="zhu2020auxrn">[51]</span></td>
+<td style="text-align: center;">41</td>
+<td style="text-align: center;">3.24</td>
+<td style="text-align: center;">0.21</td>
+<td style="text-align: center;">81</td>
+<td style="text-align: center;">71</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span></td>
+<td style="text-align: center;">687</td>
+<td style="text-align: center;">3.09</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">99</td>
+<td style="text-align: center;">73</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Airbert (ours)</td>
+<td style="text-align: center;">687</td>
+<td style="text-align: center;">2.69</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">99</td>
+<td style="text-align: center;">77</td>
+</tr>
+</tbody>
+</table>
+    </div>
+  </div>
+
+
+<p>We first perform ablation studies evaluating alternative ways to pretrain Airbert in Sec. <a href="#sec:xp_pretrain_airbert" data-reference-type="ref" data-reference="sec:xp_pretrain_airbert">5.1</a>. Then, we compare Airbert with state-of-the-art methods on R2R and REVERIE tasks in Sec. <a href="#sec:xp_sota" data-reference-type="ref" data-reference="sec:xp_sota">5.2</a>. Finally, in Sec. <a href="#sec:eval:fsl" data-reference-type="ref" data-reference="sec:eval:fsl">5.3</a>, we evaluate models in a more challenging setup: VLN few-shot learning where an agent is trained on examples taken from one/few houses.</p>
+<p><strong>R2R Setup.</strong> We briefly describe the two evaluation datasets used in our work: R2R <span class="citation" data-cites="anderson2018r2r">[2]</span> and REVERIE <span class="citation" data-cites="qi2020reverie">[19]</span>. Most of our experiments are conducted on the R2R dataset <span class="citation" data-cites="anderson2018r2r">[2]</span>, where we adopt standard splits and metrics defined by the task. We focus on success rate (SR), which is the ratio of predicted paths that stop within 3m of the goal. Please refer to <span class="citation" data-cites="anderson2018r2r majumdar2020vlnbert">[2], [17]</span> for a more detailed explanation of the metrics. In particular, as the discriminative model uses path selection for R2R, we follow the pre-explored environment setting adopted by VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span>, and compute metrics on the selected path.</p>
+<p><strong>REVERIE Setup.</strong> We also adopt standard splits and metrics on the REVERIE task <span class="citation" data-cites="qi2020reverie">[19]</span>. Here, the success rate (SR) is the ratio of paths for which the agent stops at a viewpoint where the target object is visible. Remote Grounding Success Rate (RGS) measures accuracy of localizing the target object in the stopped viewpoint, and RGS per path length (RGSPL) is a path length weighted version.</p>
+
+<h2 class="ui header">5.1 Pretraining with BnB</h2>
+<p>We perform ablation studies on the impact of various methods for creating path-instruction pairs. We also present ablation studies that highlight the impact of using the shuffling loss during Airbert’s pretraining as well as fine-tuning stages. Throughout this section, our primary focus is on the SR on the unseen validation set and we compare our results against VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span>, which achieves a SR of 59.26%.</p>
+
+<p><strong>1. Impact of creating path-instruction pairs.</strong> Table <a href="#tab:how" data-reference-type="ref" data-reference="tab:how">2</a> presents the performance of multiple ways of using the BnB dataset after ConCaps pretraining as illustrated in Fig. <a href="#fig:model" data-reference-type="ref" data-reference="fig:model">3</a>. In row 1, we show that directly using BnB IC pairs without any strategies to reduce domain gap improves performance over VLN-BERT by 3.2%. Even if we skip ConCaps pretraining, we achieve 60.54% outperforming 59.26% of VLN-BERT. It proves that our BnB dataset is more beneficial to VLN than the generic ConCaps dataset.</p>
+<p>Naive concatenation (row 2) does only slightly better than using the IC pairs (row 1) as there are still domain shifts with respect to fluency of transitions and lack of visual context. Rows 3-6 show that each method mitigates domain-shift to some extent. Instruction rephrasing (row 3) performs better at improving instructions than instruction generation (row 4), possibly since the generator is unable to use the diverse vocabulary of the BnB captions. Inserting captionless images at random locations (row 6) reduces the domain-shift significantly and achieves the highest individual performance. Finally, a combination of instruction rephrasing, image merging and captionless insertion provides an overall 3.8% improvement over concatenation, and a large 7.2% improvement over VLN-BERT.</p>
+<p><strong>2. Shuffling loss applied during pretraining.</strong> Table <a href="#tab:shuffle" data-reference-type="ref" data-reference="tab:shuffle">3</a> demonstrates that shuffling is an effective strategy to train the model to reason about temporal order, and enforce alignment between PI pairs. Rows 2-4 show that shuffling is beneficial both during pretraining with BnB-PI data, or during fine-tuning with R2R data, and results in 2.3% and 0.4% improvements respectively. In combination with the <em>Speaker</em> dataset (paths from seen houses with generated instruction yielding 178K additional PI pairs <span class="citation" data-cites="tan2019envdrop">[32]</span>), we see that shuffling has a major role to play and provides 3.1% overall improvement (row 5 vs. 6). 68.67% is also our highest single-model performance on the R2R dataset.</p>
+<p><strong>3. Shuffling loss applied during fine-tuning.</strong> The final stage of model training on R2R involves fine-tuning to rank multiple candidate paths that form the path selection task. We compare various approaches to improve this fine-tuning procedure (results in Table <a href="#tab:dataaug-r2r" data-reference-type="ref" data-reference="tab:dataaug-r2r">4</a>). (1) In row 2, we explore the impact of using additional negative paths. Unsurprisingly, this does not improve performance. (2) Inspired by <span class="citation" data-cites="gupta2020contrastive">[49]</span>, we highlight keywords in the instruction using a part-of-speech tagger <span class="citation" data-cites="joshi2018parser">[50]</span>, and include an extra loss term that encourages the model to pay attention to their similarity scores (row 3). (3) Another alternative suggested by <span class="citation" data-cites="gupta2020contrastive">[49]</span> involves masking keywords in the instruction and using VLP models to suggest replacements, resulting in hard negatives (row 4).</p>
+<p>Hard negatives and highlighting keywords show good performance improvements, about 2.1-2.3%, but at the cost of extra parsers or VLP models. On the other hand, shuffling visual paths to create two additional negatives results in highest performance improvement (row 5, +2.7% on val unseen) and appears to be a strong strategy to enforce temporal order reasoning, that neither requires an external parser nor additional VLP models.</p>
+<p><strong>4. Error analysis.</strong> We study the areas in which Airbert brings major improvements by analyzing scores for aligned PI pairs and simple corruptions that involve replacing noun phrases (<em>e.g</em>.. <em>bedroom</em> by <em>sofa</em>), swapping noun phrases appearing within the instruction, or switching left and right directions (<em>e.g</em>.. <em>turn left/right</em> or <em>leftmost/rightmost chair</em>). In particular, for every ground-truth aligned PI pair, we create 10 additional negatives by corrupting the instruction, and measure how well the model is able to assign the highest score to the correct pair as accuracy. Table <a href="#tab:analysis" data-reference-type="ref" data-reference="tab:analysis">3</a> shows that Airbert with in-domain training and the shuffling loss achieves large improvements (<span class="math inline">&gt;</span> 8%) for corruptions involving replacement or swapping of noun phrases. On the other hand, distinguishing directions continues to be a challenging problem; but here as well we see Airbert outperform VLN-BERT by 4.5%.</p>
+
+<h2 class="ui header">5.2. Comparison against state-of-the-art</h2>
+
+
+
+<table class="ui small striped table">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">SR</td>
+<td style="text-align: center;">OSR</td>
+<td style="text-align: center;">SPL</td>
+<td style="text-align: center;">TL</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">SR</td>
+<td style="text-align: center;">OSR</td>
+<td style="text-align: center;">SPL</td>
+<td style="text-align: center;">TL</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">SR</td>
+<td style="text-align: center;">OSR</td>
+<td style="text-align: center;">SPL</td>
+<td style="text-align: center;">TL</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seq2Seq-SF <span class="citation" data-cites="anderson2018r2r">[2]</span></td>
+<td style="text-align: center;">29.59</td>
+<td style="text-align: center;">35.70</td>
+<td style="text-align: center;">24.01</td>
+<td style="text-align: center;">12.88</td>
+<td style="text-align: center;">18.97</td>
+<td style="text-align: center;">14.96</td>
+<td style="text-align: center;">4.20</td>
+<td style="text-align: center;">8.07</td>
+<td style="text-align: center;">2.84</td>
+<td style="text-align: center;">11.07</td>
+<td style="text-align: center;">2.16</td>
+<td style="text-align: center;">1.63</td>
+<td style="text-align: center;">3.99</td>
+<td style="text-align: center;">6.88</td>
+<td style="text-align: center;">3.09</td>
+<td style="text-align: center;">10.89</td>
+<td style="text-align: center;">2.00</td>
+<td style="text-align: center;">1.58</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RCM <span class="citation" data-cites="wang2019reinforced">[31]</span></td>
+<td style="text-align: center;">23.33</td>
+<td style="text-align: center;">29.44</td>
+<td style="text-align: center;">21.82</td>
+<td style="text-align: center;">10.70</td>
+<td style="text-align: center;">16.23</td>
+<td style="text-align: center;">15.36</td>
+<td style="text-align: center;">9.29</td>
+<td style="text-align: center;">14.23</td>
+<td style="text-align: center;">6.97</td>
+<td style="text-align: center;">11.98</td>
+<td style="text-align: center;">4.89</td>
+<td style="text-align: center;">3.89</td>
+<td style="text-align: center;">7.84</td>
+<td style="text-align: center;">11.68</td>
+<td style="text-align: center;">6.67</td>
+<td style="text-align: center;">10.60</td>
+<td style="text-align: center;">3.67</td>
+<td style="text-align: center;">3.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SMNA <span class="citation" data-cites="ma2019self">[28]</span></td>
+<td style="text-align: center;">41.25</td>
+<td style="text-align: center;">43.29</td>
+<td style="text-align: center;">39.61</td>
+<td style="text-align: center;">7.54</td>
+<td style="text-align: center;">30.07</td>
+<td style="text-align: center;">28.98</td>
+<td style="text-align: center;">8.15</td>
+<td style="text-align: center;">11.28</td>
+<td style="text-align: center;">6.44</td>
+<td style="text-align: center;">9.07</td>
+<td style="text-align: center;">4.54</td>
+<td style="text-align: center;">3.61</td>
+<td style="text-align: center;">5.80</td>
+<td style="text-align: center;">8.39</td>
+<td style="text-align: center;">4.53</td>
+<td style="text-align: center;">9.23</td>
+<td style="text-align: center;">3.10</td>
+<td style="text-align: center;">2.39</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FAST-MATTN <span class="citation" data-cites="qi2020reverie">[19]</span></td>
+<td style="text-align: center;"><strong>50.53</strong></td>
+<td style="text-align: center;"><strong>55.17</strong></td>
+<td style="text-align: center;"><strong>45.50</strong></td>
+<td style="text-align: center;"><strong>16.35</strong></td>
+<td style="text-align: center;">31.97</td>
+<td style="text-align: center;">29.66</td>
+<td style="text-align: center;">14.40</td>
+<td style="text-align: center;">28.20</td>
+<td style="text-align: center;">7.19</td>
+<td style="text-align: center;">45.28</td>
+<td style="text-align: center;">7.84</td>
+<td style="text-align: center;">4.67</td>
+<td style="text-align: center;">19.88</td>
+<td style="text-align: center;">30.63</td>
+<td style="text-align: center;">11.61</td>
+<td style="text-align: center;">39.05</td>
+<td style="text-align: center;">11.28</td>
+<td style="text-align: center;">6.08</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rec (OSCAR) <span class="citation" data-cites="hong2021recurrentvln">[18]</span></td>
+<td style="text-align: center;">38.09</td>
+<td style="text-align: center;">39.99</td>
+<td style="text-align: center;">32.95</td>
+<td style="text-align: center;">14.18</td>
+<td style="text-align: center;">24.88</td>
+<td style="text-align: center;">21.53</td>
+<td style="text-align: center;">23.74</td>
+<td style="text-align: center;">27.66</td>
+<td style="text-align: center;">19.35</td>
+<td style="text-align: center;">16.26</td>
+<td style="text-align: center;">13.58</td>
+<td style="text-align: center;">11.19</td>
+<td style="text-align: center;">22.14</td>
+<td style="text-align: center;">24.54</td>
+<td style="text-align: center;">18.25</td>
+<td style="text-align: center;">16.35</td>
+<td style="text-align: center;">11.51</td>
+<td style="text-align: center;">9.55</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rec (ViLBERT)</td>
+<td style="text-align: center;">43.64</td>
+<td style="text-align: center;">45.61</td>
+<td style="text-align: center;">37.86</td>
+<td style="text-align: center;">15.75</td>
+<td style="text-align: center;">31.69</td>
+<td style="text-align: center;">27.58</td>
+<td style="text-align: center;">24.57</td>
+<td style="text-align: center;">29.91</td>
+<td style="text-align: center;">19.81</td>
+<td style="text-align: center;">17.83</td>
+<td style="text-align: center;">15.14</td>
+<td style="text-align: center;">12.15</td>
+<td style="text-align: center;">22.17</td>
+<td style="text-align: center;">25.51</td>
+<td style="text-align: center;">17.28</td>
+<td style="text-align: center;">18.22</td>
+<td style="text-align: center;">12.87</td>
+<td style="text-align: center;">10.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Rec (VLN-BERT)</td>
+<td style="text-align: center;">41.11</td>
+<td style="text-align: center;">42.87</td>
+<td style="text-align: center;">35.55</td>
+<td style="text-align: center;">15.62</td>
+<td style="text-align: center;">28.39</td>
+<td style="text-align: center;">24.99</td>
+<td style="text-align: center;">25.53</td>
+<td style="text-align: center;">29.42</td>
+<td style="text-align: center;">20.51</td>
+<td style="text-align: center;">16.94</td>
+<td style="text-align: center;">16.42</td>
+<td style="text-align: center;">13.29</td>
+<td style="text-align: center;">23.57</td>
+<td style="text-align: center;">26.83</td>
+<td style="text-align: center;">18.73</td>
+<td style="text-align: center;">17.63</td>
+<td style="text-align: center;">14.24</td>
+<td style="text-align: center;">11.63</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rec (Airbert)</td>
+<td style="text-align: center;">47.01</td>
+<td style="text-align: center;">48.98</td>
+<td style="text-align: center;">42.34</td>
+<td style="text-align: center;">15.16</td>
+<td style="text-align: center;"><strong>32.75</strong></td>
+<td style="text-align: center;"><strong>30.01</strong></td>
+<td style="text-align: center;"><strong>27.89</strong></td>
+<td style="text-align: center;"><strong>34.51</strong></td>
+<td style="text-align: center;"><strong>21.88</strong></td>
+<td style="text-align: center;"><strong>18.71</strong></td>
+<td style="text-align: center;"><strong>18.23</strong></td>
+<td style="text-align: center;"><strong>14.18</strong></td>
+<td style="text-align: center;"><strong>30.28</strong></td>
+<td style="text-align: center;"><strong>34.20</strong></td>
+<td style="text-align: center;"><strong>23.61</strong></td>
+<td style="text-align: center;"><strong>17.91</strong></td>
+<td style="text-align: center;"><strong>16.83</strong></td>
+<td style="text-align: center;"><strong>13.28</strong></td>
+</tr>
+</tbody>
+</table>
+
+
+
+<p><strong>R2R.</strong> We first evaluate the discriminative model for the R2R task. Similar to VLN-BERT, we evaluate Airbert as an ensemble model created by a linear combination (chosen through grid search) of multiple model outputs (see Table <a href="#tab:ensemble" data-reference-type="ref" data-reference="tab:ensemble">6</a>). First, we see that Airbert alone (row 2) outperforms VLN-BERT (row 1) by 9.4% on the unseen environments and a strong ensemble of speaker and follower models <span class="citation" data-cites="tan2019envdrop">[32]</span> (row 3) by 0.7%. Ensembling Airbert results in a gain of 1.4% over the VLN-BERT ensemble (row 4 vs. 5).</p>
+<p>We also obtain results on the test set by submitting our best method to the R2R leaderboard.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> As seen from Table <a href="#tab:testset" data-reference-type="ref" data-reference="tab:testset">9</a>, our method of ensembling Airbert, speaker, and follower (similar to VLN-BERT with speaker and follower <span class="citation" data-cites="devlin2018bert">[11]</span>) achieves the highest success rate at 77% and is ranked first as of the submission deadline. Airbert also benefits generative models for the R2R task. The results are presented in the supplementary material. In both VLN-BERT and Airbert, 30 candidate trajectories are sampled using beam search with the EnvDrop <span class="citation" data-cites="tan2019envdrop">[32]</span> approach, inducing the same path length (PL) for all three methods (687 in <a href="#tab:testset" data-reference-type="ref" data-reference="tab:testset">8</a>. The SPL metric on the leaderboard takes into account the total path length over the 30 trajectories. This explains why SPL is very low and similar across multiple approaches.</p>
+<p><strong>REVERIE.</strong> Table <a href="#tab:reverie_results" data-reference-type="ref" data-reference="tab:reverie_results">7</a> presents results for the REVERIE dataset. The last four rows in the table use Recurrent VLN-BERT <span class="citation" data-cites="hong2021recurrentvln">[18]</span> with different backbones or parameter initialization. The OSCAR and ViLBERT backbones are pretrained on out-of-domain image-caption pairs. As compared to OSCAR, we observe slight improvements using the ViLBERT backbone for the REVERIE task. VLN-BERT shares the same architecture as ViLBERT, but is pretrained on the R2R dataset, resulting in performance improvement on the unseen environments. Our pretrained Airbert achieves significantly better performance than VLN-BERT, with over 2.4% gain on navigation SR and 1.8% gain on RGS in unseen environments (val unseen). Without any special adaptation, we see that Airbert brings benefits from pretraining on the BnB dataset. We also achieve the state-of-the-art performance on the REVERIE test set, surpassing previous works by a large margin.</p>
+
+
+<h2 class="ui header">5.3. Training a navigation agent on few houses</h2>
+
+<table class="ui small striped table">
+<caption>Performance on R2R few-shot evaluation. During training, only a subset of the Matterport <span class="citation" data-cites="Matterport3D">[44]</span> environments are accessible. Standard deviation is reported in the supplementary material.</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+<td style="text-align: center;">Seen</td>
+<td style="text-align: center;">Unseen</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">Rand</td>
+<td style="text-align: center;">53.33</td>
+<td style="text-align: center;">27.06</td>
+<td style="text-align: center;">75.42</td>
+<td style="text-align: center;">49.48</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">Rand</td>
+<td style="text-align: center;">56.95</td>
+<td style="text-align: center;">37.01</td>
+<td style="text-align: center;">65.91</td>
+<td style="text-align: center;">58.04</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">61</td>
+<td style="text-align: center;">Rand</td>
+<td style="text-align: center;">67.68</td>
+<td style="text-align: center;">57.15</td>
+<td style="text-align: center;">66.21</td>
+<td style="text-align: center;">64.75</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">61</td>
+<td style="text-align: center;"><span class="citation" data-cites="tan2019envdrop">[32]</span></td>
+<td style="text-align: center;">70.20</td>
+<td style="text-align: center;">59.26</td>
+<td style="text-align: center;">73.83</td>
+<td style="text-align: center;">68.48</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>We hypothesize that in-domain pretraining, especially one that leverages proposed PI pair generation methods, can achieve superior performance while requiring less training data. To evaluate this, we propose a novel few shot evaluation paradigm for VLN: models are allowed to fine-tune on samples (PI pairs) from one (or few) environments. Few-shot learning for VLN is particularly interesting as visual appearance of houses may differ vastly across geographies, and while training data is hard to obtain, pretraining data like BnB may be readily available.</p>
+<p><strong>One/few shot tasks.</strong> We considered two types of setups: (1) learning from a single environment, which we refer as one-shot learning; and (2) learning from 6 environments (representing <span class="math inline">10%</span> of the total training size). For both cases, we randomly sample 5 sets of environments, and report average results (standard deviations in the supplementary material). As the number of paths in an environment may have a large impact on performance, we exclude 17 of 61 environments with less than 80 paths.</p>
+<p><strong>Results.</strong> We adopt VLN-BERT, pretrained on ConCaps, as a baseline for few-shot tasks. Recall that fine-tuning VLN-BERT and Airbert on R2R relies on candidate paths drawn from an existing model (EnvDrop <span class="citation" data-cites="tan2019envdrop">[32]</span>). However, as this would lead to unfair comparisons (EnvDrop is trained on the full dataset), we sample candidate paths by random walks from the starting position in the environment.</p>
+<p>Table <a href="#tab:fsl" data-reference-type="ref" data-reference="tab:fsl">9</a> shows that Airbert outperforms VLN-BERT by very large margins on the unseen validation set: 22.4% with 1 house and 21% with 6 houses. In fact, Airbert fine-tuned on 6 houses is almost as good as VLN-BERT on the entire training set. Interestingly, as seen in the last two rows of the table, using random paths for fine-tuning does not lead to a large performance drop for both models and is a testament to the power of pretrained networks.</p>
+    </div>
+<script>
+$('.ui.sticky.results')
+  .sticky({
+    context: '#xp'
+  })
+;
+</script>
+
+
+
+    
+
+<div class="ui segment">
+
+	<h1 header="ui header">6. Conclusion</h1>
+<p>We introduced BnB, a large-scale, in-domain, image-text dataset from houses listed on online rental marketplaces and showed how domain gaps between BnB image-caption pairs and VLN tasks can be mitigated through the creation of path-instruction pairs. We also proposed shuffling, as a means to improve an agent’s reasoning about temporal order. Our pretrained model Airbert, achieved state-of-the-art on R2R through the discriminative path-selection setting, and REVERIE through a generative setting. We also demonstrated large performance improvements when applying our model to a challenging one/few-shot VLN setup, highlighting the impact of good pretraining in VLN tasks.</p>
+</div>
+
+</div>
+
+<br/>
+<br/>
+<br/>
+
+  <div class="ui inverted vertical footer segment">
+    <div class="ui container">
+      <div id="refs" class="references">
+<div id="ref-anderson2018evaluation">
+<p>[1] P. Anderson, A. Chang, D. S. Chaplot, A. Dosovitskiy, S. Gupta, V. Koltun, J. Kosecka, J. Malik, R. Mottaghi, M. Savva, and others, “On evaluation of embodied navigation agents,” <em>arXiv preprint arXiv:1807.06757</em>, 2018.</p>
+</div>
+<div id="ref-anderson2018r2r">
+<p>[2] P. Anderson, Q. Wu, D. Teney, J. Bruce, M. Johnson, N. Sünderhauf, I. Reid, S. Gould, and A. van den Hengel, “Vision-and-language navigation: Interpreting visually-grounded navigation instructions in real environments,” in <em>CVPR</em>, 2018.</p>
+</div>
+<div id="ref-zhangdiagnosing">
+<p>[3] Y. Zhang, H. Tan, and M. Bansal, “Diagnosing the environment bias in vision-and-language navigation,” in <em>IJCAI</em>, 2020.</p>
+</div>
+<div id="ref-alberti2019b2t2">
+<p>[4] C. Alberti, J. Ling, M. Collins, and D. Reitter, “Fusion of detected objects in text for visual question answering,” in <em>EMNLP</em>, 2019.</p>
+</div>
+<div id="ref-chen2020uniter">
+<p>[5] Y.-C. Chen, L. Li, L. Yu, A. El Kholy, F. Ahmed, Z. Gan, Y. Cheng, and J. Liu, “Uniter: Universal image-text representation learning,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-li2020oscar">
+<p>[6] X. Li, X. Yin, C. Li, P. Zhang, X. Hu, L. Zhang, L. Wang, H. Hu, L. Dong, F. Wei, and others, “Oscar: Object-semantics aligned pre-training for vision-language tasks,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-lu2019vilbert">
+<p>[7] J. Lu, D. Batra, D. Parikh, and S. Lee, “ViLBERT: Pretraining task-agnostic visiolinguistic representations for vision-and-language tasks,” in <em>NIPS</em>, 2019.</p>
+</div>
+<div id="ref-lu2020_12in1">
+<p>[8] J. Lu, V. Goswami, M. Rohrbach, D. Parikh, and S. Lee, “12-in-1: Multi-task vision and language representation learning,” in <em>CVPR</em>, 2020.</p>
+</div>
+<div id="ref-su2019vlbert">
+<p>[9] W. Su, X. Zhu, Y. Cao, B. Li, L. Lu, F. Wei, and J. Dai, “VL-bert: Pre-training of generic visual-linguistic representations,” in <em>ICLR</em>, 2019.</p>
+</div>
+<div id="ref-vaswani2017attention">
+<p>[10] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin, “Attention is all you need,” <em>NIPS</em>, 2017.</p>
+</div>
+<div id="ref-devlin2018bert">
+<p>[11] J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, “BERT: Pre-training of deep bidirectional transformers for language understanding,” <em>arXiv preprint arXiv:1810.04805</em>, 2018.</p>
+</div>
+<div id="ref-ordonez2011sbu">
+<p>[12] V. Ordonez, G. Kulkarni, and T. Berg, “Im2Text: Describing images using 1 million captioned photographs,” in <em>NIPS</em>, 2011.</p>
+</div>
+<div id="ref-ConceptualCaptions">
+<p>[13] P. Sharma, N. Ding, S. Goodman, and R. Soricut, “Conceptual Captions: A cleaned, hypernymed, image alt-text dataset for automatic image captioning,” in <em>ACL</em>, 2018.</p>
+</div>
+<div id="ref-hao2020prevalent">
+<p>[14] W. Hao, C. Li, X. Li, L. Carin, and J. Gao, “Towards learning a generic agent for vision-and-language navigation via pre-training,” in <em>CVPR</em>, 2020.</p>
+</div>
+<div id="ref-huang2019transferable">
+<p>[15] H. Huang, V. Jain, H. Mehta, A. Ku, G. Magalhaes, J. Baldridge, and E. Ie, “Transferable representation learning in vision-and-language navigation,” in <em>ICCV</em>, 2019.</p>
+</div>
+<div id="ref-li2019press">
+<p>[16] X. Li, C. Li, Q. Xia, Y. Bisk, A. Celikyilmaz, J. Gao, N. Smith, and Y. Choi, “Robust navigation with language pretraining and stochastic sampling,” <em>EMNLP</em>, 2019.</p>
+</div>
+<div id="ref-majumdar2020vlnbert">
+<p>[17] A. Majumdar, A. Shrivastava, S. Lee, P. Anderson, D. Parikh, and D. Batra, “Improving vision-and-language navigation with image-text pairs from the web,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-hong2021recurrentvln">
+<p>[18] Y. Hong, Q. Wu, Y. Qi, C. Rodriguez-Opazo, and S. Gould, “A recurrent vision-and-language BERT for navigation,” <em>arXiv preprint arXiv:2011.13922</em>, 2021.</p>
+</div>
+<div id="ref-qi2020reverie">
+<p>[19] Y. Qi, Q. Wu, P. Anderson, X. Wang, W. Y. Wang, C. Shen, and A. van den Hengel, “REVERIE: Remote embodied visual referring expression in real indoor environments,” in <em>CVPR</em>, 2020.</p>
+</div>
+<div id="ref-chen2019touchdown">
+<p>[20] H. Chen, A. Suhr, D. Misra, N. Snavely, and Y. Artzi, “Touchdown: Natural language navigation and spatial reasoning in visual street environments,” in <em>CVPR</em>, 2019.</p>
+</div>
+<div id="ref-krantz2020r2rce">
+<p>[21] J. Krantz, E. Wijmans, A. Majumdar, D. Batra, and S. Lee, “Beyond the nav-graph: Vision-and-language navigation in continuous environments,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-ku2020rxr">
+<p>[22] A. Ku, P. Anderson, R. Patel, E. Ie, and J. Baldridge, “Room-Across-Room: Multilingual vision-and-language navigation with dense spatiotemporal grounding,” in <em>EMNLP</em>, 2020.</p>
+</div>
+<div id="ref-nguyen2019hanna">
+<p>[23] K. Nguyen and H. Daumé III, “Help, Anna! Visual navigation with natural multimodal assistance via retrospective curiosity-encouraging imitation learning,” in <em>ACL</em>, 2019.</p>
+</div>
+<div id="ref-nguyen2019vlna">
+<p>[24] K. Nguyen, D. Dey, C. Brockett, and B. Dolan, “Vision-based navigation with language-based assistance via imitation learning with indirect intervention,” in <em>CVPR</em>, 2019.</p>
+</div>
+<div id="ref-shridhar2020alfred">
+<p>[25] M. Shridhar, J. Thomason, D. Gordon, Y. Bisk, W. Han, R. Mottaghi, L. Zettlemoyer, and D. Fox, “ALFRED: A benchmark for interpreting grounded instructions for everyday tasks,” in <em>CVPR</em>, 2020.</p>
+</div>
+<div id="ref-thomason2020cvdn">
+<p>[26] J. Thomason, M. Murray, M. Cakmak, and L. Zettlemoyer, “Vision-and-dialog navigation,” in <em>CoRL</em>, 2020.</p>
+</div>
+<div id="ref-fried2018speaker">
+<p>[27] D. Fried, R. Hu, V. Cirik, A. Rohrbach, J. Andreas, L.-P. Morency, T. Berg-Kirkpatrick, K. Saenko, D. Klein, and T. Darrell, “Speaker-Follower models for vision-and-language navigation,” in <em>NIPS</em>, 2018.</p>
+</div>
+<div id="ref-ma2019self">
+<p>[28] C.-Y. Ma, J. Lu, Z. Wu, G. AlRegib, Z. Kira, R. Socher, and C. Xiong, “Self-monitoring navigation agent via auxiliary progress estimation,” in <em>ICLR</em>, 2019.</p>
+</div>
+<div id="ref-qi2020object">
+<p>[29] Y. Qi, Z. Pan, S. Zhang, A. van den Hengel, and Q. Wu, “Object-and-action aware model for visual language navigation,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-wang2018look">
+<p>[30] X. Wang, W. Xiong, H. Wang, and W. Y. Wang, “Look before you leap: Bridging model-free and model-based reinforcement learning for planned-ahead vision-and-language navigation,” in <em>ECCV</em>, 2018.</p>
+</div>
+<div id="ref-wang2019reinforced">
+<p>[31] X. Wang, Q. Huang, A. Celikyilmaz, J. Gao, D. Shen, Y.-F. Wang, W. Y. Wang, and L. Zhang, “Reinforced cross-modal matching and self-supervised imitation learning for vision-language navigation,” in <em>CVPR</em>, 2019.</p>
+</div>
+<div id="ref-tan2019envdrop">
+<p>[32] H. Tan, L. Yu, and M. Bansal, “Learning to navigate unseen environments: Back translation with environmental dropout,” in <em>NAACL</em>, 2019.</p>
+</div>
+<div id="ref-wang2020serl">
+<p>[33] H. Wang, Q. Wu, and C. Shen, “Soft expert reward learning for vision-and-language navigation,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-ma2019regretful">
+<p>[34] C.-Y. Ma, Z. Wu, G. AlRegib, C. Xiong, and Z. Kira, “The Regretful Agent: Heuristic-aided navigation through progress estimation,” in <em>CVPR</em>, 2019.</p>
+</div>
+<div id="ref-ke2019tactical">
+<p>[35] L. Ke, X. Li, Y. Bisk, A. Holtzman, Z. Gan, J. Liu, J. Gao, Y. Choi, and S. Srinivasa, “Tactical rewind: Self-correction via backtracking in vision-and-language navigation,” in <em>CVPR</em>, 2019.</p>
+</div>
+<div id="ref-miech2019howto100m">
+<p>[36] A. Miech, D. Zhukov, J.-B. Alayrac, M. Tapaswi, I. Laptev, and J. Sivic, “HowTo100M: Learning a text-video embedding by watching hundred million narrated video clips,” in <em>ICCV</em>, 2019.</p>
+</div>
+<div id="ref-radford2021learning">
+<p>[37] A. Radford, J. W. Kim, C. Hallacy, A. Ramesh, G. Goh, S. Agarwal, G. Sastry, A. Askell, P. Mishkin, J. Clark, and others, “Learning transferable visual models from natural language supervision,” <em>arXiv preprint arXiv:2103.00020</em>, 2021.</p>
+</div>
+<div id="ref-tan2019lxmert">
+<p>[38] H. Tan and M. Bansal, “Lxmert: Learning cross-modality encoder representations from transformers,” in <em>EMNLP</em>, 2019.</p>
+</div>
+<div id="ref-antol2015vqa">
+<p>[39] S. Antol, A. Agrawal, J. Lu, M. Mitchell, D. Batra, C. Lawrence Zitnick, and D. Parikh, “VQA: Visual Question Answering,” in <em>ICCV</em>, 2015.</p>
+</div>
+<div id="ref-kazemzadeh2014referitgame">
+<p>[40] S. Kazemzadeh, V. Ordonez, M. Matten, and T. Berg, “ReferItGame: Referring to objects in photographs of natural scenes,” in <em>EMNLP</em>, 2014.</p>
+</div>
+<div id="ref-wang2016learning">
+<p>[41] L. Wang, Y. Li, and S. Lazebnik, “Learning deep structure-preserving image-text embeddings,” in <em>CVPR</em>, 2016.</p>
+</div>
+<div id="ref-vinyals2016show">
+<p>[42] O. Vinyals, A. Toshev, S. Bengio, and D. Erhan, “Show and tell: Lessons learned from the 2015 MSCOCO image captioning challenge,” <em>PAMI</em>, vol. 39, no. 4, pp. 652–663, 2016.</p>
+</div>
+<div id="ref-airbnb">
+<p>[43] “Airbnb fast facts.”.</p>
+</div>
+<div id="ref-Matterport3D">
+<p>[44] A. Chang, A. Dai, T. Funkhouser, M. Halber, M. Niessner, M. Savva, S. Song, A. Zeng, and Y. Zhang, “Matterport3D: Learning from RGB-D data in indoor environments,” <em>3DV</em>, 2017.</p>
+</div>
+<div id="ref-zhou2017places">
+<p>[45] B. Zhou, A. Lapedriza, A. Khosla, A. Oliva, and A. Torralba, “Places: A 10 million image database for scene recognition,” <em>PAMI</em>, vol. 40, no. 6, pp. 1452–1464, 2017.</p>
+</div>
+<div id="ref-hong2020fgr2r">
+<p>[46] Y. Hong, C. Rodriguez, Q. Wu, and S. Gould, “Sub-instruction aware vision-and-language navigation,” in <em>EMNLP</em>, 2020.</p>
+</div>
+<div id="ref-krishna2017vg">
+<p>[47] R. Krishna, Y. Zhu, O. Groth, J. Johnson, K. Hata, J. Kravitz, S. Chen, Y. Kalantidis, L.-J. Li, D. A. Shamma, and others, “Visual Genome: Connecting language and vision using crowdsourced dense image annotations,” <em>IJCV</em>, vol. 123, pp. 32–73, 2017.</p>
+</div>
+<div id="ref-anderson2017butd">
+<p>[48] P. Anderson, X. He, C. Buehler, D. Teney, M. Johnson, S. Gould, and L. Zhang, “Bottom-up and top-down attention for image captioning and visual question answering,” in <em>CVPR</em>, 2018.</p>
+</div>
+<div id="ref-gupta2020contrastive">
+<p>[49] T. Gupta, A. Vahdat, G. Chechik, X. Yang, J. Kautz, and D. Hoiem, “Contrastive learning for weakly supervised phrase grounding,” in <em>ECCV</em>, 2020.</p>
+</div>
+<div id="ref-joshi2018parser">
+<p>[50] V. Joshi, M. E. Peters, and M. Hopkins, “Extending a parser to distant domains using a few dozen partially annotated examples,” in <em>ACL</em>, 2018.</p>
+</div>
+<div id="ref-zhu2020auxrn">
+<p>[51] F. Zhu, Y. Zhu, X. Chang, and X. Liang, “Vision-language navigation with self-supervised auxiliary reasoning tasks,” in <em>CVPR</em>, 2020.</p>
+</div>
+<div id="ref-vinyals2015pointer">
+<p>[52] O. Vinyals, M. Fortunato, and N. Jaitly, “Pointer networks,” <em>arXiv preprint arXiv:1506.03134</em>, 2015.</p>
+</div>
+</div>
+    </div>
+  </div>
+
+</body>
+
+</html>
+

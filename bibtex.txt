@@ -1,0 +1,7 @@
+@misc{guhur2021airbert,
+  title ={{Airbert: In-domain Pretraining for Vision-and-Language Navigation}},
+  author={Pierre-Louis Guhur and Makarand Tapaswi and Shizhe Chen and Ivan Laptev and Cordelia Schmid},
+  year={2021},
+  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+}
+
