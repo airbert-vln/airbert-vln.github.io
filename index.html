@@ -345,12 +345,11 @@ In-domain Pretraining for Vision-and-Language Navigation
   <div class="ui middle aligned stackable grid container">
       <h1 class="ui header">Airbert: A Pretrained VLN Model</h1>
 
+    <img  class="ui fluid image" src="/assets/img/pretraining.svg"  />
 
 <p>Our pretrained model, Airbert, is a generic transformer backbone that can be readily integrated in both discriminative VLN tasks such as path-instruction compatibility prediction <span class="citation" data-cites="majumdar2020vlnbert">[17]</span> and generative VLN tasks <span class="citation" data-cites="hong2021recurrentvln">[18]</span> in R2R navigation <span class="citation" data-cites="anderson2018r2r">[2]</span> and REVERIE remote referring expression <span class="citation" data-cites="qi2020reverie">[19]</span>. We achieve state-of-the-art performance on these VLN tasks with our pretrained model. Beyond the standard evaluation, our in-domain pretraining opens an exciting new direction of <em>one/few-shot VLN</em> where the agent is trained on examples only from one/few environment(s) and expected to generalize to other unseen environments.</p>
 
-      	<div class="ui center aligned raised very padded text container segment">
-    <img  class="ui fluid image" src="/assets/img/pretraining.svg"  />
-      </div>
+
           <p> We also propose a shuffling loss that improves the model’s temporal reasoning abilities by learning a temporal alignment between a path and the corresponding instruction.</p>
 
  </div>
