@@ -196,6 +196,9 @@
 	<a href="bibtex.txt" class="item">
 		<i class="quote right icon"></i>BibTeX
 	</a>
+	<a href="https://github.com/airbert-vln" class="item">
+		<i class="github icon"></i>GitHub
+	</a>
   </div>
 </div>
 
@@ -215,6 +218,9 @@
 	</a>
 	<a href="bibtex.txt" class="item">
 		<i class="quote right icon"></i>BibTeX
+	</a>
+	<a href="https://github.com/airbert-vln" class="item">
+		<i class="github icon"></i>GitHub
 	</a>
   </div>
 
@@ -245,6 +251,9 @@
 		<i class="quote right icon"></i>BibTeX
 	</a>
   
+	<a href="https://github.com/airbert-vln" class="item">
+		<i class="github icon"></i>GitHub
+	</a>
       </div>
     </div>
 
@@ -620,7 +629,7 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 </tr>
 <tr class="even">
 <td style="text-align: left;">2</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
@@ -631,7 +640,7 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 <tr class="odd">
 <td style="text-align: left;">3</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
@@ -642,7 +651,7 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 <td style="text-align: left;">4</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">71.19</td>
@@ -653,7 +662,7 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">70.51</td>
 <td style="text-align: center;">64.07</td>
@@ -664,17 +673,17 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">74.43</td>
 <td style="text-align: center;">66.05</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">7</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">73.57</td>
 <td style="text-align: center;"><strong>66.52</strong></td>
 </tr>
@@ -745,91 +754,80 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 <table class="ui small striped table">
 <caption>Table 3: Impact of shuffling during pretraining and fine-tuning. While additional data helps, we see that using the shuffling loss (abbreviated as Shuf.) consistently improves model performance. Row 1 corresponds to VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span>. </caption>
 <tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: center;">Mask</td>
-<td style="text-align: center;">Shuf.</td>
-<td style="text-align: center;">Rank</td>
-<td style="text-align: center;">Shuf.</td>
-<td style="text-align: center;">Rank</td>
-<td style="text-align: center;">Shuf.</td>
-<td style="text-align: center;">Seen</td>
-<td style="text-align: center;">Unseen</td>
-</tr>
+<thead class="even">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">Mask</th>
+<th style="text-align: center;">Shuf.</th>
+<th style="text-align: center;">Rank</th>
+<th style="text-align: center;">Shuf.</th>
+<th style="text-align: center;">Rank</th>
+<th style="text-align: center;">Shuf.</th>
+<th style="text-align: center;">Seen</th>
+<th style="text-align: center;">Unseen</th>
+</thead>
 <tr class="odd">
 <td style="text-align: left;">1</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">70.20</td>
 <td style="text-align: center;">59.26</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">73.24</td>
 <td style="text-align: center;">64.21</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">3</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">73.57</td>
 <td style="text-align: center;">66.52</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">4</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">74.69</td>
 <td style="text-align: center;">66.90</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">5</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">70.21</td>
 <td style="text-align: center;">65.52</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">6</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
+<td style="text-align: center;">✔️ </td>
 <td style="text-align: center;">73.83</td>
 <td style="text-align: center;"><strong>68.67</strong></td>
 </tr>
@@ -837,26 +835,17 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 </table>
 
 <table class="ui small striped table">
-<caption>Table 5: Accuracy of models attempting to pick the correct PI pair from a pool of correct + 10 negatives created by simple corruptions such as replacing or swapping noun phrases and switching directions (left with right). Random performance is <span class="math inline">$\frac{1}{11}$</span> or 9.1%.</caption>
+<caption>Table 5: Accuracy of models attempting to pick the correct PI pair from a pool of correct + 10 negatives created by simple corruptions such as replacing or swapping noun phrases and switching directions (left with right). Random performance is <span class="math inline">1/11</span> or 9.1%.</caption>
 <tbody>
-<tr class="odd">
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"></td>
-<td style="text-align: center;">Seen</td>
-<td style="text-align: center;">Unseen</td>
-<td style="text-align: center;">Seen</td>
-<td style="text-align: center;">Unseen</td>
-<td style="text-align: center;">Seen</td>
-<td style="text-align: center;">Unseen</td>
-</tr>
+<thead class="even">
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Seen</th>
+<th style="text-align: center;">Unseen</th>
+<th style="text-align: center;">Seen</th>
+<th style="text-align: center;">Unseen</th>
+<th style="text-align: center;">Seen</th>
+<th style="text-align: center;">Unseen</th>
+</thead>
 <tr class="odd">
 <td style="text-align: center;">VLN-BERT</td>
 <td style="text-align: center;">60.3</td>
@@ -878,218 +867,57 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 </tbody>
 </table>
 
-<table class="ui small striped table">
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">VLN-BERT</td>
-<td style="text-align: center;">Speaker</td>
-<td style="text-align: center;">Follower</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"><span class="citation" data-cites="majumdar2020vlnbert">[17]</span></td>
-<td style="text-align: center;"><span class="citation" data-cites="tan2019envdrop">[32]</span></td>
-<td style="text-align: center;"><span class="citation" data-cites="tan2019envdrop">[32]</span></td>
-<td style="text-align: center;">PL</td>
-<td style="text-align: center;">NE</td>
-<td style="text-align: center;">SPL</td>
-<td style="text-align: center;">OSR</td>
-<td style="text-align: center;">SR</td>
-<td style="text-align: center;">PL</td>
-<td style="text-align: center;">NE</td>
-<td style="text-align: center;">SPL</td>
-<td style="text-align: center;">OSR</td>
-<td style="text-align: center;">SR</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">1</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">10.28</td>
-<td style="text-align: center;">3.73</td>
-<td style="text-align: center;">0.66</td>
-<td style="text-align: center;">76.47</td>
-<td style="text-align: center;">70.20</td>
-<td style="text-align: center;">9.60</td>
-<td style="text-align: center;">4.10</td>
-<td style="text-align: center;">0.55</td>
-<td style="text-align: center;">69.22</td>
-<td style="text-align: center;">59.26</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">10.59</td>
-<td style="text-align: center;">3.21</td>
-<td style="text-align: center;">0.69</td>
-<td style="text-align: center;">80.71</td>
-<td style="text-align: center;"><strong>73.85</strong></td>
-<td style="text-align: center;">10.03</td>
-<td style="text-align: center;">3.24</td>
-<td style="text-align: center;">0.63</td>
-<td style="text-align: center;">78.45</td>
-<td style="text-align: center;"><strong>68.67</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">3</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">10.69</td>
-<td style="text-align: center;">2.72</td>
-<td style="text-align: center;">0.70</td>
-<td style="text-align: center;">82.94</td>
-<td style="text-align: center;">74.22</td>
-<td style="text-align: center;">10.10</td>
-<td style="text-align: center;">3.32</td>
-<td style="text-align: center;">0.63</td>
-<td style="text-align: center;">76.63</td>
-<td style="text-align: center;">67.90</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">4</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">10.61</td>
-<td style="text-align: center;">2.35</td>
-<td style="text-align: center;">0.78</td>
-<td style="text-align: center;">86.57</td>
-<td style="text-align: center;"><strong>81.86</strong></td>
-<td style="text-align: center;">10.00</td>
-<td style="text-align: center;">2.76</td>
-<td style="text-align: center;">0.68</td>
-<td style="text-align: center;">81.91</td>
-<td style="text-align: center;">73.61</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">5</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">10.63</td>
-<td style="text-align: center;">2.13</td>
-<td style="text-align: center;">0.77</td>
-<td style="text-align: center;">87.17</td>
-<td style="text-align: center;"><strong>81.40</strong></td>
-<td style="text-align: center;">9.99</td>
-<td style="text-align: center;">2.69</td>
-<td style="text-align: center;">0.70</td>
-<td style="text-align: center;">82.89</td>
-<td style="text-align: center;"><strong>75.01</strong></td>
-</tr>
-</tbody>
-</table>
 
 <table class="ui small striped table">
 <caption>Table 8: Navigation performance on the R2R unseen test set as indicated on the benchmark leaderboard.</caption>
 <tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"></td>
-<td style="text-align: center;">PL</td>
-<td style="text-align: center;">NE</td>
-<td style="text-align: center;">SPL</td>
-<td style="text-align: center;">OSR</td>
-<td style="text-align: center;">SR</td>
-</tr>
+<thead class="odd">
+<th style="text-align: left;">Model</th>
+<th style="text-align: center;">OSR</th>
+<th style="text-align: center;">SR</th>
+</thead>
 <tr class="odd">
 <td style="text-align: left;">Speaker-Follower <span class="citation" data-cites="fried2018speaker">[27]</span></td>
-<td style="text-align: center;">1,257</td>
-<td style="text-align: center;">4.87</td>
-<td style="text-align: center;">0.01</td>
 <td style="text-align: center;">96</td>
 <td style="text-align: center;">53</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">PreSS <span class="citation" data-cites="li2019press">[16]</span></td>
-<td style="text-align: center;">10.5</td>
-<td style="text-align: center;">24.5</td>
-<td style="text-align: center;">0.63</td>
 <td style="text-align: center;">57</td>
 <td style="text-align: center;">53</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">PREVALENT <span class="citation" data-cites="hao2020prevalent">[14]</span></td>
-<td style="text-align: center;">10.21</td>
-<td style="text-align: center;">4.52</td>
-<td style="text-align: center;">0.56</td>
 <td style="text-align: center;">64</td>
 <td style="text-align: center;">59</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Self-Monitoring <span class="citation" data-cites="ma2019self">[28]</span></td>
-<td style="text-align: center;">373</td>
-<td style="text-align: center;">4.48</td>
-<td style="text-align: center;">0.02</td>
 <td style="text-align: center;">97</td>
 <td style="text-align: center;">61</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Reinforced CM <span class="citation" data-cites="wang2019reinforced">[31]</span></td>
-<td style="text-align: center;">358</td>
-<td style="text-align: center;">4.03</td>
-<td style="text-align: center;">0.02</td>
 <td style="text-align: center;">96</td>
 <td style="text-align: center;">63</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">EnvDrop <span class="citation" data-cites="anderson2018r2r">[2]</span></td>
-<td style="text-align: center;">687</td>
-<td style="text-align: center;">3.26</td>
-<td style="text-align: center;">0.01</td>
 <td style="text-align: center;">99</td>
 <td style="text-align: center;">69</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">AuxRN <span class="citation" data-cites="zhu2020auxrn">[51]</span></td>
-<td style="text-align: center;">41</td>
-<td style="text-align: center;">3.24</td>
-<td style="text-align: center;">0.21</td>
 <td style="text-align: center;">81</td>
 <td style="text-align: center;">71</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">VLN-BERT <span class="citation" data-cites="majumdar2020vlnbert">[17]</span></td>
-<td style="text-align: center;">687</td>
-<td style="text-align: center;">3.09</td>
-<td style="text-align: center;">0.01</td>
 <td style="text-align: center;">99</td>
 <td style="text-align: center;">73</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Airbert (ours)</td>
-<td style="text-align: center;">687</td>
-<td style="text-align: center;">2.69</td>
-<td style="text-align: center;">0.01</td>
 <td style="text-align: center;">99</td>
 <td style="text-align: center;">77</td>
 </tr>
@@ -1119,192 +947,75 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 
 <table class="ui small striped table">
 <tbody>
-<tr class="odd">
-<td style="text-align: left;"></td>
-<td style="text-align: center;">SR</td>
-<td style="text-align: center;">OSR</td>
-<td style="text-align: center;">SPL</td>
-<td style="text-align: center;">TL</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">SR</td>
-<td style="text-align: center;">OSR</td>
-<td style="text-align: center;">SPL</td>
-<td style="text-align: center;">TL</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">SR</td>
-<td style="text-align: center;">OSR</td>
-<td style="text-align: center;">SPL</td>
-<td style="text-align: center;">TL</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
+<thead class="odd">
+<th style="text-align: center;">Model</th>
+<th style="text-align: center;">SR</th>
+<th style="text-align: center;">OSR</th>
+<th style="text-align: center;">SPL</th>
+<th style="text-align: center;">RGS</th>
+<th style="text-align: center;">RGSPL</th>
+</thead>
 <tr class="even">
 <td style="text-align: left;">Seq2Seq-SF <span class="citation" data-cites="anderson2018r2r">[2]</span></td>
-<td style="text-align: center;">29.59</td>
-<td style="text-align: center;">35.70</td>
-<td style="text-align: center;">24.01</td>
-<td style="text-align: center;">12.88</td>
-<td style="text-align: center;">18.97</td>
-<td style="text-align: center;">14.96</td>
-<td style="text-align: center;">4.20</td>
-<td style="text-align: center;">8.07</td>
-<td style="text-align: center;">2.84</td>
-<td style="text-align: center;">11.07</td>
-<td style="text-align: center;">2.16</td>
-<td style="text-align: center;">1.63</td>
 <td style="text-align: center;">3.99</td>
 <td style="text-align: center;">6.88</td>
 <td style="text-align: center;">3.09</td>
-<td style="text-align: center;">10.89</td>
 <td style="text-align: center;">2.00</td>
 <td style="text-align: center;">1.58</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">RCM <span class="citation" data-cites="wang2019reinforced">[31]</span></td>
-<td style="text-align: center;">23.33</td>
-<td style="text-align: center;">29.44</td>
-<td style="text-align: center;">21.82</td>
-<td style="text-align: center;">10.70</td>
-<td style="text-align: center;">16.23</td>
-<td style="text-align: center;">15.36</td>
-<td style="text-align: center;">9.29</td>
-<td style="text-align: center;">14.23</td>
-<td style="text-align: center;">6.97</td>
-<td style="text-align: center;">11.98</td>
-<td style="text-align: center;">4.89</td>
-<td style="text-align: center;">3.89</td>
 <td style="text-align: center;">7.84</td>
 <td style="text-align: center;">11.68</td>
 <td style="text-align: center;">6.67</td>
-<td style="text-align: center;">10.60</td>
 <td style="text-align: center;">3.67</td>
 <td style="text-align: center;">3.14</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SMNA <span class="citation" data-cites="ma2019self">[28]</span></td>
-<td style="text-align: center;">41.25</td>
-<td style="text-align: center;">43.29</td>
-<td style="text-align: center;">39.61</td>
-<td style="text-align: center;">7.54</td>
-<td style="text-align: center;">30.07</td>
-<td style="text-align: center;">28.98</td>
-<td style="text-align: center;">8.15</td>
-<td style="text-align: center;">11.28</td>
-<td style="text-align: center;">6.44</td>
-<td style="text-align: center;">9.07</td>
-<td style="text-align: center;">4.54</td>
-<td style="text-align: center;">3.61</td>
 <td style="text-align: center;">5.80</td>
 <td style="text-align: center;">8.39</td>
 <td style="text-align: center;">4.53</td>
-<td style="text-align: center;">9.23</td>
 <td style="text-align: center;">3.10</td>
 <td style="text-align: center;">2.39</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">FAST-MATTN <span class="citation" data-cites="qi2020reverie">[19]</span></td>
-<td style="text-align: center;"><strong>50.53</strong></td>
-<td style="text-align: center;"><strong>55.17</strong></td>
-<td style="text-align: center;"><strong>45.50</strong></td>
-<td style="text-align: center;"><strong>16.35</strong></td>
-<td style="text-align: center;">31.97</td>
-<td style="text-align: center;">29.66</td>
-<td style="text-align: center;">14.40</td>
-<td style="text-align: center;">28.20</td>
-<td style="text-align: center;">7.19</td>
-<td style="text-align: center;">45.28</td>
-<td style="text-align: center;">7.84</td>
-<td style="text-align: center;">4.67</td>
 <td style="text-align: center;">19.88</td>
 <td style="text-align: center;">30.63</td>
 <td style="text-align: center;">11.61</td>
-<td style="text-align: center;">39.05</td>
 <td style="text-align: center;">11.28</td>
 <td style="text-align: center;">6.08</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Rec (OSCAR) <span class="citation" data-cites="hong2021recurrentvln">[18]</span></td>
-<td style="text-align: center;">38.09</td>
-<td style="text-align: center;">39.99</td>
-<td style="text-align: center;">32.95</td>
-<td style="text-align: center;">14.18</td>
-<td style="text-align: center;">24.88</td>
-<td style="text-align: center;">21.53</td>
-<td style="text-align: center;">23.74</td>
-<td style="text-align: center;">27.66</td>
-<td style="text-align: center;">19.35</td>
-<td style="text-align: center;">16.26</td>
-<td style="text-align: center;">13.58</td>
-<td style="text-align: center;">11.19</td>
 <td style="text-align: center;">22.14</td>
 <td style="text-align: center;">24.54</td>
 <td style="text-align: center;">18.25</td>
-<td style="text-align: center;">16.35</td>
 <td style="text-align: center;">11.51</td>
 <td style="text-align: center;">9.55</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Rec (ViLBERT)</td>
-<td style="text-align: center;">43.64</td>
-<td style="text-align: center;">45.61</td>
-<td style="text-align: center;">37.86</td>
-<td style="text-align: center;">15.75</td>
-<td style="text-align: center;">31.69</td>
-<td style="text-align: center;">27.58</td>
-<td style="text-align: center;">24.57</td>
-<td style="text-align: center;">29.91</td>
-<td style="text-align: center;">19.81</td>
-<td style="text-align: center;">17.83</td>
-<td style="text-align: center;">15.14</td>
-<td style="text-align: center;">12.15</td>
 <td style="text-align: center;">22.17</td>
 <td style="text-align: center;">25.51</td>
 <td style="text-align: center;">17.28</td>
-<td style="text-align: center;">18.22</td>
 <td style="text-align: center;">12.87</td>
 <td style="text-align: center;">10.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Rec (VLN-BERT)</td>
-<td style="text-align: center;">41.11</td>
-<td style="text-align: center;">42.87</td>
-<td style="text-align: center;">35.55</td>
-<td style="text-align: center;">15.62</td>
-<td style="text-align: center;">28.39</td>
-<td style="text-align: center;">24.99</td>
-<td style="text-align: center;">25.53</td>
-<td style="text-align: center;">29.42</td>
-<td style="text-align: center;">20.51</td>
-<td style="text-align: center;">16.94</td>
-<td style="text-align: center;">16.42</td>
-<td style="text-align: center;">13.29</td>
 <td style="text-align: center;">23.57</td>
 <td style="text-align: center;">26.83</td>
 <td style="text-align: center;">18.73</td>
-<td style="text-align: center;">17.63</td>
 <td style="text-align: center;">14.24</td>
 <td style="text-align: center;">11.63</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Rec (Airbert)</td>
-<td style="text-align: center;">47.01</td>
-<td style="text-align: center;">48.98</td>
-<td style="text-align: center;">42.34</td>
-<td style="text-align: center;">15.16</td>
-<td style="text-align: center;"><strong>32.75</strong></td>
-<td style="text-align: center;"><strong>30.01</strong></td>
-<td style="text-align: center;"><strong>27.89</strong></td>
-<td style="text-align: center;"><strong>34.51</strong></td>
-<td style="text-align: center;"><strong>21.88</strong></td>
-<td style="text-align: center;"><strong>18.71</strong></td>
-<td style="text-align: center;"><strong>18.23</strong></td>
-<td style="text-align: center;"><strong>14.18</strong></td>
 <td style="text-align: center;"><strong>30.28</strong></td>
 <td style="text-align: center;"><strong>34.20</strong></td>
 <td style="text-align: center;"><strong>23.61</strong></td>
-<td style="text-align: center;"><strong>17.91</strong></td>
 <td style="text-align: center;"><strong>16.83</strong></td>
 <td style="text-align: center;"><strong>13.28</strong></td>
 </tr>
@@ -1320,65 +1031,6 @@ X_C &amp;= [\texttt{[CLS]}, w^1_1, \ldots, w^1_{T_1}, \ldots, w^K_1, \ldots, w^K
 
 <h2 class="ui header">5.3. Training a navigation agent on few houses</h2>
 
-<table class="ui small striped table">
-<caption>Performance on R2R few-shot evaluation. During training, only a subset of the Matterport <span class="citation" data-cites="Matterport3D">[44]</span> environments are accessible. Standard deviation is reported in the supplementary material.</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">Seen</td>
-<td style="text-align: center;">Unseen</td>
-<td style="text-align: center;">Seen</td>
-<td style="text-align: center;">Unseen</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">Rand</td>
-<td style="text-align: center;">53.33</td>
-<td style="text-align: center;">27.06</td>
-<td style="text-align: center;">75.42</td>
-<td style="text-align: center;">49.48</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">Rand</td>
-<td style="text-align: center;">56.95</td>
-<td style="text-align: center;">37.01</td>
-<td style="text-align: center;">65.91</td>
-<td style="text-align: center;">58.04</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">61</td>
-<td style="text-align: center;">Rand</td>
-<td style="text-align: center;">67.68</td>
-<td style="text-align: center;">57.15</td>
-<td style="text-align: center;">66.21</td>
-<td style="text-align: center;">64.75</td>
-<td style="text-align: center;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">61</td>
-<td style="text-align: center;"><span class="citation" data-cites="tan2019envdrop">[32]</span></td>
-<td style="text-align: center;">70.20</td>
-<td style="text-align: center;">59.26</td>
-<td style="text-align: center;">73.83</td>
-<td style="text-align: center;">68.48</td>
-<td style="text-align: center;"></td>
-</tr>
-</tbody>
-</table>
 <p>We hypothesize that in-domain pretraining, especially one that leverages proposed PI pair generation methods, can achieve superior performance while requiring less training data. To evaluate this, we propose a novel few shot evaluation paradigm for VLN: models are allowed to fine-tune on samples (PI pairs) from one (or few) environments. Few-shot learning for VLN is particularly interesting as visual appearance of houses may differ vastly across geographies, and while training data is hard to obtain, pretraining data like BnB may be readily available.</p>
 <p><strong>One/few shot tasks.</strong> We considered two types of setups: (1) learning from a single environment, which we refer as one-shot learning; and (2) learning from 6 environments (representing <span class="math inline">10%</span> of the total training size). For both cases, we randomly sample 5 sets of environments, and report average results (standard deviations in the supplementary material). As the number of paths in an environment may have a large impact on performance, we exclude 17 of 61 environments with less than 80 paths.</p>
 <p><strong>Results.</strong> We adopt VLN-BERT, pretrained on ConCaps, as a baseline for few-shot tasks. Recall that fine-tuning VLN-BERT and Airbert on R2R relies on candidate paths drawn from an existing model (EnvDrop <span class="citation" data-cites="tan2019envdrop">[32]</span>). However, as this would lead to unfair comparisons (EnvDrop is trained on the full dataset), we sample candidate paths by random walks from the starting position in the environment.</p>
